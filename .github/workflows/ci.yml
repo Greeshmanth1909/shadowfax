@@ -1,7 +1,7 @@
 name: Unit Tests
 on: [push]
 jobs:
-  Unit Tests:
+  Unit_Tests:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
