@@ -6,5 +6,9 @@ import (
 )
 
 func main() {
+    s1 := board.InitSquares64()
 	fmt.Printf("%v\nStatus: running\n", board.Name)
+    for _, val := range s1 {
+        fmt.Printf("%v ", val)
+    }
 }
