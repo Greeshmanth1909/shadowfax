@@ -134,3 +134,19 @@ const (
 	H8
 	NO_SQ Square = 99 // Used for invalid squares
 )
+
+type S_Board struct {
+    Pieces [BrdSqrNum]int
+    Pawns [3]uint64
+    KingSquare [2]int
+    EnP int
+    Side int
+    FiftyMove int
+    Ply int
+    HisPly int
+    PosKey uint64
+    PieceNum int
+    BigPiece [3]int
+    MinPiece [3]int
+    MajPiece [3]int
+}
