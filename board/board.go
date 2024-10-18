@@ -5,7 +5,9 @@ var Board [120]uint64
 
 const Name string = "Shadowfax v1.0.0"
 
-var BrdSqrNum int = 120
+const BrdSqrNum int = 120
+
+const MAXGAMEMOVES int = 1028
 
 // define piece types
 type Piece int
@@ -24,6 +26,16 @@ const (
 	Br
 	Bq
 	Bk
+)
+
+// define castling
+type Castling int
+
+const (
+    WKCT Castling = 1
+    WQCT = 2
+    BKCT = 4
+    BQCT = 8
 )
 
 // define files and ranks
@@ -142,6 +154,7 @@ type S_Board struct {
     EnP int
     Side int
     FiftyMove int
+    CastlePerm int
     Ply int
     HisPly int
     PosKey uint64
@@ -149,4 +162,13 @@ type S_Board struct {
     BigPiece [3]int
     MinPiece [3]int
     MajPiece [3]int
+    History [MAXGAMEMOVES]S_Undo
+}
+
+type S_Undo struct {
+    Move int
+    CastlePerm int
+    EnP int
+    FiftyMove int
+    PosKey uint64
 }
