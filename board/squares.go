@@ -34,3 +34,11 @@ func InitSquares64() [64]int {
 	}
 	return Square64to120
 }
+
+// FRtoSq120 takes file and rank of a respective square and returns its 64 int array index
+func FRtoSq120(file File, rank Rank) int {
+	file120 := int(file) + 1
+	rank120 := int(rank) + 2
+	index := rank120*10 + file120
+	return Square120to64[index]
+}

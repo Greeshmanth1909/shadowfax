@@ -11,5 +11,18 @@ func main() {
 	fmt.Printf("%v\nStatus: running\n", board.Name)
 
 	fmt.Println(s1)
+	//board.PrintBitBoard()
 	fmt.Println(s2)
+	fmt.Println(board.FRtoSq120(board.FILE_E, board.RANK_4))
+	fmt.Println("Printing bitboard")
+	var bb uint64 = 0
+	board.PrintBitBoard(bb)
+
+	fmt.Println("*******")
+	fmt.Println("Add pawn to d2")
+	bb = bb | uint64(1)<<board.Square120to64[board.D2]
+	board.PrintBitBoard(bb)
+	fmt.Println("Add pawn to g2")
+	bb = bb | uint64(1)<<board.Square120to64[board.G2]
+	board.PrintBitBoard(bb)
 }

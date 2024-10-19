@@ -80,95 +80,95 @@ const (
 type Square int
 
 const (
-    A1 Square = iota + 21
-    B1
-    C1
-    D1
-    E1
-    F1
-    G1
-    H1
+	A1 Square = iota + 21
+	B1
+	C1
+	D1
+	E1
+	F1
+	G1
+	H1
 )
 
 const (
-    A2 Square = iota + 31
-    B2
-    C2
-    D2
-    E2
-    F2
-    G2
-    H2
+	A2 Square = iota + 31
+	B2
+	C2
+	D2
+	E2
+	F2
+	G2
+	H2
 )
 
 const (
-    A3 Square = iota + 41
-    B3
-    C3
-    D3
-    E3
-    F3
-    G3
-    H3
+	A3 Square = iota + 41
+	B3
+	C3
+	D3
+	E3
+	F3
+	G3
+	H3
 )
 
 const (
-    A4 Square = iota + 51
-    B4
-    C4
-    D4
-    E4
-    F4
-    G4
-    H4
+	A4 Square = iota + 51
+	B4
+	C4
+	D4
+	E4
+	F4
+	G4
+	H4
 )
 
 const (
-    A5 Square = iota + 61
-    B5
-    C5
-    D5
-    E5
-    F5
-    G5
-    H5
+	A5 Square = iota + 61
+	B5
+	C5
+	D5
+	E5
+	F5
+	G5
+	H5
 )
 
 const (
-    A6 Square = iota + 71
-    B6
-    C6
-    D6
-    E6
-    F6
-    G6
-    H6
+	A6 Square = iota + 71
+	B6
+	C6
+	D6
+	E6
+	F6
+	G6
+	H6
 )
 
 const (
-    A7 Square = iota + 81
-    B7
-    C7
-    D7
-    E7
-    F7
-    G7
-    H7
+	A7 Square = iota + 81
+	B7
+	C7
+	D7
+	E7
+	F7
+	G7
+	H7
 )
 
 const (
-    A8 Square = iota + 91
-    B8
-    C8
-    D8
-    E8
-    F8
-    G8
-    H8
+	A8 Square = iota + 91
+	B8
+	C8
+	D8
+	E8
+	F8
+	G8
+	H8
 )
 
 const (
-    NO_SQ Square = 99 // Used for invalid squares
+	NO_SQ Square = 99 // Used for invalid squares
 )
 
 type S_Board struct {
@@ -187,7 +187,7 @@ type S_Board struct {
 	MinPiece   [3]int
 	MajPiece   [3]int
 	History    [MAXGAMEMOVES]S_Undo
-    PList      [13][10]int
+	PList      [13][10]int
 }
 
 type S_Undo struct {
