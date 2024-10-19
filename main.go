@@ -6,9 +6,10 @@ import (
 )
 
 func main() {
-    s1 := board.InitSquares64()
+	s1 := board.InitSquares64()
+	s2 := board.InitSquares120()
 	fmt.Printf("%v\nStatus: running\n", board.Name)
-    for _, val := range s1 {
-        fmt.Printf("%v ", val)
-    }
+
+	fmt.Println(s1)
+	fmt.Println(s2)
 }

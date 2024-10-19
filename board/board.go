@@ -32,10 +32,10 @@ const (
 type Castling int
 
 const (
-    WKCT Castling = 1
-    WQCT = 2
-    BKCT = 4
-    BQCT = 8
+	WKCT Castling = 1
+	WQCT          = 2
+	BKCT          = 4
+	BQCT          = 8
 )
 
 // define files and ranks
@@ -148,27 +148,27 @@ const (
 )
 
 type S_Board struct {
-    Pieces [BrdSqrNum]int
-    Pawns [3]uint64
-    KingSquare [2]int
-    EnP int
-    Side int
-    FiftyMove int
-    CastlePerm int
-    Ply int
-    HisPly int
-    PosKey uint64
-    PieceNum int
-    BigPiece [3]int
-    MinPiece [3]int
-    MajPiece [3]int
-    History [MAXGAMEMOVES]S_Undo
+	Pieces     [BrdSqrNum]int
+	Pawns      [3]uint64
+	KingSquare [2]int
+	EnP        int
+	Side       int
+	FiftyMove  int
+	CastlePerm int
+	Ply        int
+	HisPly     int
+	PosKey     uint64
+	PieceNum   int
+	BigPiece   [3]int
+	MinPiece   [3]int
+	MajPiece   [3]int
+	History    [MAXGAMEMOVES]S_Undo
 }
 
 type S_Undo struct {
-    Move int
-    CastlePerm int
-    EnP int
-    FiftyMove int
-    PosKey uint64
+	Move       int
+	CastlePerm int
+	EnP        int
+	FiftyMove  int
+	PosKey     uint64
 }
