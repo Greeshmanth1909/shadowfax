@@ -49,3 +49,21 @@ func TestSquaresArr(t *testing.T) {
 		t.Fatalf("Squares Array 64 Mismatch: have- %v \nwant- %v", have, want)
 	}
 }
+
+func TestPopCount(t *testing.T) {
+	var num uint64 = 9
+	count := CountBits(num)
+	if count != 2 {
+		t.Fatalf("population count error: have %v, want %v", count, 2)
+	}
+
+	num = 24
+	ind := PopBits(&num)
+	if num != 16 {
+		t.Fatalf("PopBits error: popbits(24) == 16; got %v", num)
+	}
+	if ind != 3 {
+		t.Fatalf("PopBits index error: popbits(24) == 16 (pop index should equal 3); got %v", ind)
+	}
+
+}

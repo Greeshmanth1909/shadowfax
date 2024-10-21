@@ -2,6 +2,7 @@ package board
 
 import (
 	"fmt"
+	"math/bits"
 )
 
 func PrintBitBoard(bb uint64) {
@@ -17,4 +18,17 @@ func PrintBitBoard(bb uint64) {
 		}
 		fmt.Print("\n")
 	}
+}
+
+func CountBits(bb uint64) int {
+	return bits.OnesCount64(bb)
+}
+
+func PopBits(bb *uint64) int {
+	index := bits.TrailingZeros64(*bb)
+	var one uint64 = 1
+	one = one << index
+	mask := ^one
+	*bb = *bb & mask
+	return index
 }
