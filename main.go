@@ -18,21 +18,13 @@ func main() {
 	var bb uint64 = 0
 	board.PrintBitBoard(bb)
 
-	fmt.Println("*******")
-	fmt.Println("Add pawn to d2")
-	bb = bb | uint64(1)<<board.Square120to64[board.D2]
+	board.InitBitMasks()
+	board.SetBit(63, &bb)
 	board.PrintBitBoard(bb)
-	fmt.Println("Add pawn to g2")
-	bb = bb | uint64(1)<<board.Square120to64[board.G2]
+	board.SetBit(15, &bb)
 	board.PrintBitBoard(bb)
-	fmt.Println("Add pawn to b4")
-	bb |= uint64(1) << board.Square120to64[board.B4]
+	fmt.Println("********")
+	board.ClearBit(15, &bb)
 	board.PrintBitBoard(bb)
-	bb |= uint64(1) << board.Square120to64[board.H8]
-	board.PrintBitBoard(bb)
-	fmt.Printf("bitcount %v\n", board.CountBits(bb))
-	fmt.Println("Popping")
-	ind := board.PopBits(&bb)
-	board.PrintBitBoard(bb)
-	fmt.Println(ind)
+
 }
