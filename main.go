@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
+	"github.com/Greeshmanth1909/shadowfax/util"
 )
 
 func main() {
-	InitAll()
+	util.InitAll()
 	fmt.Printf("%v\nStatus: running\n", board.Name)
 	fmt.Println("Printing bitboard")
 	var bb uint64 = 0
@@ -19,11 +20,4 @@ func main() {
 	board.ClearBit(15, &bb)
 	board.PrintBitBoard(bb)
 
-}
-
-func InitAll() {
-	board.InitSquares64()
-	board.InitSquares120()
-	board.InitBitMasks()
-	board.InitHashKeys()
 }
