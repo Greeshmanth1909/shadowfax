@@ -168,8 +168,8 @@ const (
 )
 
 const (
-	NO_SQ Square = 99 // Used for invalid squares
-    OFFBOARD Square = 65
+	NO_SQ    Square = 99 // Used for invalid squares
+	OFFBOARD Square = 65
 )
 
 type S_Board struct {

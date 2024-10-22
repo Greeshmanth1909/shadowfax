@@ -5,7 +5,12 @@ import (
 	"testing"
 )
 
+func init() {
+}
+
 func TestPiece(t *testing.T) {
+	InitSquares64()
+	InitSquares120()
 	have := fmt.Sprintf("%v", Wp)
 	want := fmt.Sprintf("%v", 1)
 	if have != want {
@@ -14,7 +19,7 @@ func TestPiece(t *testing.T) {
 }
 
 func TestSquaresArr(t *testing.T) {
-	have := InitSquares64()
+	have := Square64to120
 	want := [64]int{
 		21, 22, 23, 24, 25, 26, 27, 28,
 		31, 32, 33, 34, 35, 36, 37, 38,
@@ -29,7 +34,7 @@ func TestSquaresArr(t *testing.T) {
 		t.Fatalf("Squares Array 64 Mismatch: have- %v \nwant- %v", have, want)
 	}
 
-	have120 := InitSquares120()
+	have120 := Square120to64
 	want120 := [120]int{
 		65, 65, 65, 65, 65, 65, 65, 65, 65, 65,
 		65, 65, 65, 65, 65, 65, 65, 65, 65, 65,

@@ -11,7 +11,7 @@ var SideKey uint64
 var CastleKeys [16]uint64
 
 // InitHashKey initialises position keys with pseudo-random uint64 numbers
-func InitHashKey() {
+func InitHashKeys() {
 	for i := 0; i < 13; i++ {
 		for j := 0; j < 120; j++ {
 			PieceKeys[i][j] = rand.Uint64()
