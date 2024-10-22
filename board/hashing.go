@@ -26,22 +26,22 @@ func InitHashKey() {
 // GenerateHash generates a Zobrist Hash for a given position
 func GenerateHash(pos *S_Board) uint64 {
 	var finalKey uint64 = 0
-	for i, piece := range *pos.Pieces {
-		if piece != NO_SQ && piece != EMPTY {
-			finalKey ^= piece
+	for _, piece := range pos.Pieces {
+		if piece != int(NO_SQ) && piece != int(EMPTY) {
+			finalKey ^= uint64(piece)
 		}
 	}
 	// TODO: Add logging and telemetry
-	if *pos.Side == WHITE {
+	if pos.Side == WHITE {
 		finalKey ^= SideKey
 	}
 
-	if *pos.EnP != NO_SQ {
-		finalKey ^= PieceKeys[EMPTY][*pos.EnP]
+	if pos.EnP != NO_SQ {
+		finalKey ^= PieceKeys[EMPTY][pos.EnP]
 	}
 
-	if *pos.CastlePerm != 0 {
-		finalKey ^= CastleKeys[*pos.CastlePerm]
+	if pos.CastlePerm != 0 {
+		finalKey ^= CastleKeys[pos.CastlePerm]
 	}
 
 	return finalKey

@@ -175,8 +175,8 @@ type S_Board struct {
 	Pieces     [BrdSqrNum]int
 	Pawns      [3]uint64
 	KingSquare [2]int
-	EnP        int
-	Side       int
+	EnP        Square
+	Side       Color
 	FiftyMove  int
 	CastlePerm int
 	Ply        int
