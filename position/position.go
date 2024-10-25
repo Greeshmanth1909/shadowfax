@@ -6,11 +6,11 @@ import (
 
 func ResetBoard(brd *board.S_Board) {
 	for i := range brd.Pieces {
-		brd.Pieces[i] = int(board.OFFBOARD)
+		brd.Pieces[i] = board.Piece(board.OFFBOARD)
 	}
 
 	for i := range brd.Pieces {
-		brd.Pieces[board.Square64to120[i]] = int(board.EMPTY)
+		brd.Pieces[board.Square64to120[i]] = board.Piece(board.EMPTY)
 	}
 
 	for i := 0; i < 3; i++ {
