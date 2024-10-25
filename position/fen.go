@@ -10,8 +10,11 @@ import (
 
 const StartPosition string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-/* Parse_FEN function parses the fen string and places the pieces in the board_structure accordingly.
-   This function assumes valid fen strings */
+/*
+Parse_FEN function parses the fen string and places the pieces in the board_structure accordingly.
+
+	This function assumes valid fen strings
+*/
 func Parse_FEN(fen *string, brd *board.S_Board) error {
 	splitFen := strings.Split(*fen, " ")
 
@@ -29,7 +32,7 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 	index := 0
 	for _, char := range fenString {
 		switch char {
-        // Black pieces
+		// Black pieces
 		case 'r':
 			brd.Pieces[board.Square64to120[index]] = board.Br
 			index++

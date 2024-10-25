@@ -9,7 +9,7 @@ func init() {
 }
 
 func TestPiece(t *testing.T) {
-    // IMPORTANT: util package cannot be imported because as board is its dependency and importing it would result in a cycle
+	// IMPORTANT: util package cannot be imported because as board is its dependency and importing it would result in a cycle
 	InitSquares64()
 	InitSquares120()
 	have := fmt.Sprintf("%v", Wp)
