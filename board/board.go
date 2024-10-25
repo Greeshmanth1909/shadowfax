@@ -173,7 +173,7 @@ const (
 )
 
 type S_Board struct {
-	Pieces     [BrdSqrNum]int
+	Pieces     [BrdSqrNum]Piece
 	Pawns      [3]uint64
 	KingSquare [2]int
 	EnP        Square
