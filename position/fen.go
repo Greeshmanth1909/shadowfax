@@ -10,11 +10,15 @@ import (
 
 const StartPosition string = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+/* Parse_FEN function parses the fen string and places the pieces in the board_structure accordingly.
+   This function assumes valid fen strings */
 func Parse_FEN(fen *string, brd *board.S_Board) error {
 	splitFen := strings.Split(*fen, " ")
+
 	if len(splitFen) != 6 {
 		return errors.New("Invalid Fen")
 	}
+
 	fenString := splitFen[0]
 	side := splitFen[1]
 	castling := splitFen[2]
@@ -23,20 +27,16 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 	fullMove := splitFen[5]
 
 	index := 0
-	//piece := board.EMPTY
-
 	for _, char := range fenString {
 		switch char {
+        // Black pieces
 		case 'r':
-			// Black rook
 			brd.Pieces[board.Square64to120[index]] = board.Br
 			index++
 		case 'n':
-			// Black night
 			brd.Pieces[board.Square64to120[index]] = board.Bn
 			index++
 		case 'b':
-			// Black bishop
 			brd.Pieces[board.Square64to120[index]] = board.Bb
 			index++
 		case 'q':
@@ -74,7 +74,6 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 			inc, _ := strconv.Atoi(string(char))
 			index += inc
 		case '/':
-			index++
 		default:
 			return errors.New(fmt.Sprintf("invalid character in fen string %v", char))
 		}
@@ -97,6 +96,7 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 	return nil
 }
 
+// A helper function to extract castling permissions from fen string KQkq -> 16
 func getCastlingPerm(str string) int {
 	castling := 0
 	if strings.Contains(str, "K") {
@@ -114,6 +114,7 @@ func getCastlingPerm(str string) int {
 	return castling
 }
 
+// A helper function to convert board square strings to board.Square ie. 'e4' to board.E4
 func convertSquareStringToSquare(square string) board.Square {
 	file := square[0]
 	rank, _ := strconv.Atoi(string(square[1]))
