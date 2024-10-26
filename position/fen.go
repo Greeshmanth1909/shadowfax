@@ -170,4 +170,9 @@ func PrintBoard(brd *board.S_Board) {
 
 	// TODO: convert castling perm int to string
 	fmt.Printf("Castling: %v\n", brd.CastlePerm)
+
+	// position key
+	board.InitHashKeys()
+	hash := board.GenerateHash(brd)
+	fmt.Printf("hash: %X\n", hash)
 }
