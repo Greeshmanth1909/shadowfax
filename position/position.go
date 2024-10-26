@@ -9,8 +9,8 @@ func ResetBoard(brd *board.S_Board) {
 		brd.Pieces[i] = board.Piece(board.OFFBOARD)
 	}
 
-	for i := range brd.Pieces {
-		brd.Pieces[board.Square64to120[i]] = board.Piece(board.EMPTY)
+	for _, val := range board.Square64to120 {
+		brd.Pieces[val] = board.Piece(board.EMPTY)
 	}
 
 	for i := 0; i < 3; i++ {
