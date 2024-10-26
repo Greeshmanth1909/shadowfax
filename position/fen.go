@@ -30,55 +30,59 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 	fullMove := splitFen[5]
 
 	index := 0
-	for _, char := range fenString {
-		switch char {
-		// Black pieces
-		case 'r':
-			brd.Pieces[board.Square64to120[index]] = board.Br
-			index++
-		case 'n':
-			brd.Pieces[board.Square64to120[index]] = board.Bn
-			index++
-		case 'b':
-			brd.Pieces[board.Square64to120[index]] = board.Bb
-			index++
-		case 'q':
-			brd.Pieces[board.Square64to120[index]] = board.Bq
-			index++
-		case 'k':
-			brd.Pieces[board.Square64to120[index]] = board.Bk
-			index++
-		case 'p':
-			brd.Pieces[board.Square64to120[index]] = board.Bp
-			index++
+	splitFenString := strings.Split(fenString, "/")
+	for i := len(splitFenString) - 1; i >= 0; i-- {
+		for _, char := range splitFenString[i] {
 
-		// White pieces
-		case 'R':
-			brd.Pieces[board.Square64to120[index]] = board.Wr
-			index++
-		case 'N':
-			brd.Pieces[board.Square64to120[index]] = board.Wn
-			index++
-		case 'B':
-			brd.Pieces[board.Square64to120[index]] = board.Wb
-			index++
-		case 'Q':
-			brd.Pieces[board.Square64to120[index]] = board.Wq
-			index++
-		case 'K':
-			brd.Pieces[board.Square64to120[index]] = board.Wk
-			index++
-		case 'P':
-			brd.Pieces[board.Square64to120[index]] = board.Wp
-			index++
+			switch char {
+			// Black pieces
+			case 'r':
+				brd.Pieces[board.Square64to120[index]] = board.Br
+				index++
+			case 'n':
+				brd.Pieces[board.Square64to120[index]] = board.Bn
+				index++
+			case 'b':
+				brd.Pieces[board.Square64to120[index]] = board.Bb
+				index++
+			case 'q':
+				brd.Pieces[board.Square64to120[index]] = board.Bq
+				index++
+			case 'k':
+				brd.Pieces[board.Square64to120[index]] = board.Bk
+				index++
+			case 'p':
+				brd.Pieces[board.Square64to120[index]] = board.Bp
+				index++
 
-		// Empty Squares
-		case '1', '2', '3', '4', '5', '6', '7', '8':
-			inc, _ := strconv.Atoi(string(char))
-			index += inc
-		case '/':
-		default:
-			return errors.New(fmt.Sprintf("invalid character in fen string %v", char))
+			// White pieces
+			case 'R':
+				brd.Pieces[board.Square64to120[index]] = board.Wr
+				index++
+			case 'N':
+				brd.Pieces[board.Square64to120[index]] = board.Wn
+				index++
+			case 'B':
+				brd.Pieces[board.Square64to120[index]] = board.Wb
+				index++
+			case 'Q':
+				brd.Pieces[board.Square64to120[index]] = board.Wq
+				index++
+			case 'K':
+				brd.Pieces[board.Square64to120[index]] = board.Wk
+				index++
+			case 'P':
+				brd.Pieces[board.Square64to120[index]] = board.Wp
+				index++
+
+			// Empty Squares
+			case '1', '2', '3', '4', '5', '6', '7', '8':
+				inc, _ := strconv.Atoi(string(char))
+				index += inc
+			case '/':
+			default:
+				return errors.New(fmt.Sprintf("invalid character in fen string %v", char))
+			}
 		}
 	}
 	if side == "w" {
@@ -141,4 +145,29 @@ func convertSquareStringToSquare(square string) board.Square {
 		r = 8
 	}
 	return board.Square((rank+1)*10 + r)
+}
+
+func PrintBoard(brd *board.S_Board) {
+	seq := ".PNBRQKpnbrqk"
+	for rank := board.RANK_8; rank >= board.RANK_1; rank-- {
+		for file := board.FILE_A; file <= board.FILE_H; file++ {
+			sq := board.FRtoSq120(file, rank)
+			fmt.Printf("%v ", string(seq[brd.Pieces[board.Square64to120[sq]]]))
+		}
+		fmt.Print("\n")
+	}
+
+	// Print castling perms, enp square, side, position key
+	if brd.Side == board.WHITE {
+		fmt.Printf("side: %v\n", "w")
+	} else {
+		fmt.Printf("side: %v\n", "b")
+	}
+
+	if brd.EnP == board.Square(board.EMPTY) {
+		fmt.Println("enp: -")
+	}
+
+	// TODO: convert castling perm int to string
+	fmt.Printf("Castling: %v\n", brd.CastlePerm)
 }

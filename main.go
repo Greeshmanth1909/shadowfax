@@ -29,4 +29,6 @@ func main() {
 	fmt.Println(boardStructure.Pieces[board.Square64to120[4]])
 	fmt.Println(boardStructure.Pieces[board.Square64to120[4]] == board.Bk)
 	fmt.Println(boardStructure.Pieces[board.Square64to120[28]] == board.EMPTY)
+
+	position.PrintBoard(&boardStructure)
 }

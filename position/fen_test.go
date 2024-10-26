@@ -1,7 +1,6 @@
 package position
 
 import (
-	"fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"github.com/Greeshmanth1909/shadowfax/util"
 	"testing"
@@ -46,9 +45,8 @@ func TestParseFen(t *testing.T) {
 	startString := StartPosition
 	var boardStructure board.S_Board
 	Parse_FEN(&startString, &boardStructure)
-	fmt.Println(boardStructure.Pieces[board.Square64to120[4]] == board.Bk)
-	if boardStructure.Pieces[board.Square64to120[4]] != board.Bk {
-		t.Fatalf("test fen parser: want %v, have %v", boardStructure.Pieces[board.Square64to120[4]], board.Bk)
+	if boardStructure.Pieces[board.Square64to120[4]] != board.Wk {
+		t.Fatalf("test fen parser: want %v, have %v", board.Wk, boardStructure.Pieces[board.Square64to120[4]])
 	}
 }
 
