@@ -16,7 +16,7 @@ Parse_FEN function parses the fen string and places the pieces in the board_stru
 	This function assumes valid fen strings
 */
 func Parse_FEN(fen *string, brd *board.S_Board) error {
-    ResetBoard(brd)
+	ResetBoard(brd)
 	splitFen := strings.Split(*fen, " ")
 
 	if len(splitFen) != 6 {
@@ -172,7 +172,7 @@ func PrintBoard(brd *board.S_Board) {
 	// TODO: convert castling perm int to string
 	fmt.Printf("Castling: %v\n", brd.CastlePerm)
 
-    // position key
-    hash := board.GenerateHash(brd)
-    fmt.Printf("hash: %X\n", hash)
+	// position key
+	hash := board.GenerateHash(brd)
+	fmt.Printf("hash: %X\n", hash)
 }
