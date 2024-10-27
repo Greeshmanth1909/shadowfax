@@ -101,6 +101,8 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 	brd.CastlePerm = getCastlingPerm(castling)
 	brd.FiftyMove, _ = strconv.Atoi(halfMove)
 	brd.Ply, _ = strconv.Atoi(fullMove)
+	hash := board.GenerateHash(brd)
+	brd.PosKey = hash
 	return nil
 }
 
@@ -173,6 +175,5 @@ func PrintBoard(brd *board.S_Board) {
 	fmt.Printf("Castling: %v\n", brd.CastlePerm)
 
 	// position key
-	hash := board.GenerateHash(brd)
-	fmt.Printf("hash: %X\n", hash)
+	fmt.Printf("hash: %X\n", brd.PosKey)
 }

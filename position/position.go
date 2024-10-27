@@ -13,7 +13,7 @@ func ResetBoard(brd *board.S_Board) {
 		brd.Pieces[val] = board.Piece(board.EMPTY)
 	}
 
-	for i := 0; i < 3; i++ {
+	for i := 0; i < 2; i++ {
 		brd.BigPiece[i] = 0
 		brd.MinPiece[i] = 0
 		brd.MajPiece[i] = 0

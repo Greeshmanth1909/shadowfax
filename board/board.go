@@ -184,9 +184,10 @@ type S_Board struct {
 	HisPly     int
 	PosKey     uint64
 	PieceNum   [13]int
-	BigPiece   [3]int
-	MinPiece   [3]int
-	MajPiece   [3]int
+	BigPiece   [2]int
+	MinPiece   [2]int
+	MajPiece   [2]int
+	Material   [2]int
 	History    [MAXGAMEMOVES]S_Undo
 	PList      [13][10]int
 }
