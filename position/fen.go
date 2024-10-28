@@ -78,10 +78,10 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 			// Empty Squares
 			case '1', '2', '3', '4', '5', '6', '7', '8':
 				inc, _ := strconv.Atoi(string(char))
-                for i := 1; i <= inc; i++ {
-                    brd.Pieces[board.Square64to120[index]] = board.EMPTY
-                    index++
-                }
+				for i := 1; i <= inc; i++ {
+					brd.Pieces[board.Square64to120[index]] = board.EMPTY
+					index++
+				}
 			case '/':
 			default:
 				return errors.New(fmt.Sprintf("invalid character in fen string %v", char))
