@@ -9,6 +9,10 @@ const BrdSqrNum int = 120
 
 const MAXGAMEMOVES int = 1028
 
+// rank and file arrays
+var FileArr [BrdSqrNum]File
+var RankArr [BrdSqrNum]Rank
+
 // define piece types
 type Piece int
 

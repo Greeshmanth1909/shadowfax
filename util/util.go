@@ -9,4 +9,5 @@ func InitAll() {
 	board.InitSquares120()
 	board.InitBitMasks()
 	board.InitHashKeys()
+	board.InitFileRankArrays()
 }

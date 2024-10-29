@@ -1,0 +1,87 @@
+Shadowfax v1.0.0
+Status: running
+Printing bitboard
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - x 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - x 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - x 
+- - - - - - - - 
+********
+- - - - - - - x 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+- - - - - - - - 
+******
+6
+false
+true
+r n b q k b n r 
+p p p p p p p p 
+. . . . . . . . 
+. . . . . . . . 
+. . . . . . . . 
+. . . . . . . . 
+P P P P P P P P 
+R N B Q K B N R 
+side: w
+enp: -
+Castling: 15
+hash: C551C2F619BF91D9
+******
+r n b q k b n r 
+p p p p p p p p 
+. . . . . . . . 
+. . . . . . . . 
+. . . . P . . . 
+. . . . . . . . 
+P P P P . P P P 
+R N B Q K B N R 
+side: b
+Castling: 15
+hash: 3AC63801DD3BF952
+******
+r n b q k b n r 
+p p . p p p p p 
+. . . . . . . . 
+. . p . . . . . 
+. . . . P . . . 
+. . . . . . . . 
+P P P P . P P P 
+R N B Q K B N R 
+side: w
+Castling: 15
+hash: 71DB4E7803D0A3EF
+r n b q k b n r 
+p p . p p p p p 
+. . . . . . . . 
+. . p . . . . . 
+. . . . P . . . 
+. . . . . N . . 
+P P P P . P P P 
+R N B Q K B . R 
+side: b
+Castling: 15
+hash: 8B50AE2D18BEF85D
