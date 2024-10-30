@@ -30,6 +30,15 @@ func UpdatePieceList(brd *S_Board) {
 			if piece == Bk {
 				brd.KingSquare[BLACK] = sq
 			}
+
+			if piece == Wp {
+				SetBit(Square120to64[sq], &brd.Pawns[WHITE])
+				SetBit(Square120to64[sq], &brd.Pawns[BOTH])
+			}
+			if piece == Bp {
+				SetBit(Square120to64[sq], &brd.Pawns[BLACK])
+				SetBit(Square120to64[sq], &brd.Pawns[BOTH])
+			}
 		}
 	}
 }
