@@ -9,6 +9,21 @@ var PieceCol = [13]Color{BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, 
 
 // UpdatePieceList iterates over the entire board and adds updates the existing pieces to the board struct accordingly
 func UpdatePieceList(brd *S_Board) {
+	// set the piece list values to zero to avoid recounting everything
+	for i := 0; i < 2; i++ {
+		brd.BigPiece[i] = 0
+		brd.MinPiece[i] = 0
+		brd.MajPiece[i] = 0
+		brd.Pawns[i] = uint64(0)
+	}
+
+	for i := 0; i < 13; i++ {
+		brd.PieceNum[i] = 0
+		for j := 0; j < 10; j++ {
+			brd.PList[i][j] = 0
+		}
+	}
+
 	for sq, val := range brd.Pieces {
 		if val != EMPTY {
 			piece := val

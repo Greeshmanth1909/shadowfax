@@ -105,6 +105,7 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 	brd.Ply, _ = strconv.Atoi(fullMove)
 	hash := board.GenerateHash(brd)
 	brd.PosKey = hash
+	board.UpdatePieceList(brd)
 	return nil
 }
 
