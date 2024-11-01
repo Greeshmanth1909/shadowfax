@@ -1,5 +1,16 @@
 package board
 
+import (
+	"log"
+	"os"
+	"reflect"
+)
+
+func init() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	log.SetOutput(os.Stdout)
+}
+
 // empty, pawn, bishop, night, rook, queen, king, pawn, bishop, night, rook, queen, king
 var BigPiece = [13]bool{false, false, true, true, true, true, true, false, true, true, true, true, true}
 var MajPiece = [13]bool{false, false, false, false, true, true, true, false, false, false, true, true, true}
@@ -56,4 +67,57 @@ func UpdatePieceList(brd *S_Board) {
 			}
 		}
 	}
+}
+
+func CheckBoard(brd *S_Board) {
+	var T_PieceNum [13]int
+	var T_BigPiece, T_MajPiece, T_Material, T_MinPiece [2]int
+
+	for _, val := range brd.Pieces {
+		if val != EMPTY {
+			piece := val
+			color := PieceCol[piece]
+			if BigPiece[piece] {
+				T_BigPiece[color]++
+				T_Material[color]++
+				T_PieceNum[piece]++
+			} else if MajPiece[piece] {
+				T_MajPiece[color]++
+				T_Material[color]++
+				T_PieceNum[piece]++
+			} else if MinPiece[piece] {
+				T_MinPiece[color]++
+				T_Material[color]++
+				T_PieceNum[piece]++
+			}
+
+			if piece == Wp {
+				T_Material[WHITE]++
+				T_PieceNum[Wp]++
+			}
+
+			if piece == Bp {
+				T_Material[BLACK]++
+				T_PieceNum[Bp]++
+			}
+		}
+	}
+
+	if !reflect.DeepEqual(T_PieceNum, brd.PieceNum) {
+		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
+	}
+	if !reflect.DeepEqual(T_MajPiece, brd.MajPiece) {
+		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
+	}
+	if !reflect.DeepEqual(T_MinPiece, brd.MinPiece) {
+		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
+	}
+	if !reflect.DeepEqual(T_BigPiece, brd.BigPiece) {
+		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
+	}
+
+	if !reflect.DeepEqual(T_Material, brd.Material) {
+		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
+	}
+
 }
