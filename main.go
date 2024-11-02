@@ -44,8 +44,11 @@ func main() {
 	position.PrintBoard(&boardStructure)
 
 	board.PrintBitBoard(boardStructure.Pawns[board.WHITE])
+	fmt.Println("")
 	board.PrintBitBoard(boardStructure.Pawns[board.BLACK])
+	fmt.Println("")
 	board.PrintBitBoard(boardStructure.Pawns[board.BOTH])
+	fmt.Println("")
 
 	board.CheckBoard(&boardStructure)
 

@@ -26,7 +26,10 @@ func UpdatePieceList(brd *S_Board) {
 		brd.MinPiece[i] = 0
 		brd.MajPiece[i] = 0
 		brd.Pawns[i] = uint64(0)
+		brd.Material[i] = 0
 	}
+	// brd.Pawns has three entries; white, black and both
+	brd.Pawns[2] = uint64(0)
 
 	for i := 0; i < 13; i++ {
 		brd.PieceNum[i] = 0
@@ -41,11 +44,14 @@ func UpdatePieceList(brd *S_Board) {
 			color := PieceCol[piece]
 			if BigPiece[piece] {
 				brd.BigPiece[color]++
-			} else if MajPiece[piece] {
+			}
+			if MajPiece[piece] {
 				brd.MajPiece[color]++
-			} else if MinPiece[piece] {
+			}
+			if MinPiece[piece] {
 				brd.MinPiece[color]++
 			}
+			brd.Material[color] += PieceVal[piece]
 
 			brd.PList[piece][brd.PieceNum[piece]] = sq
 			brd.PieceNum[piece]++
@@ -97,9 +103,6 @@ func CheckBoard(brd *S_Board) {
 			if MinPiece[piece] {
 				T_MinPiece[color]++
 			}
-			if MinPiece[piece] {
-				T_MinPiece[color]++
-			}
 
 			T_Material[color] += PieceVal[piece]
 			T_PieceNum[piece]++
@@ -120,4 +123,66 @@ func CheckBoard(brd *S_Board) {
 	if bpCount != brd.PieceNum[Bp] {
 		log.Fatalf("CheckBoard: Black pawn count not matching")
 	}
+
+	// Check pawn bitboards
+	t_pawns := [3]uint64{brd.Pawns[WHITE], brd.Pawns[BLACK], brd.Pawns[BOTH]}
+	for {
+		sq64 := PopBits(&t_pawns[WHITE])
+		if sq64 == 64 {
+			break
+		}
+		if brd.Pieces[Square64to120[sq64]] != Wp {
+			log.Fatalf("CheckBoard: White pawn on the wrong square")
+		}
+	}
+	for {
+		sq64 := PopBits(&t_pawns[BLACK])
+		if sq64 == 64 {
+			break
+		}
+		if brd.Pieces[Square64to120[sq64]] != Bp {
+			log.Fatalf("CheckBoard: Black pawn on the wrong square")
+		}
+	}
+	for {
+		sq64 := PopBits(&t_pawns[BOTH])
+		if sq64 == 64 {
+			break
+		}
+		if !(brd.Pieces[Square64to120[sq64]] == Wp || brd.Pieces[Square64to120[sq64]] == Bp) {
+			log.Fatalf("CheckBoard: pawn on the wrong square")
+		}
+	}
+
+	// Other assertions
+	if !reflect.DeepEqual(T_Material, brd.Material) {
+		log.Fatalf("CheckBoard: Material not equal temp != brd (%v != %v)", T_Material, brd.Material)
+	}
+	if !reflect.DeepEqual(T_BigPiece, brd.BigPiece) {
+		log.Fatalf("CheckBoard: BigPiece not equal temp != brd (%v != %v)", T_BigPiece, brd.BigPiece)
+	}
+	if !reflect.DeepEqual(T_MinPiece, brd.MinPiece) {
+		log.Fatalf("CheckBoard: MinPiece not equal temp != brd (%v != %v)", T_MinPiece, brd.MinPiece)
+	}
+	if !reflect.DeepEqual(T_MajPiece, brd.MajPiece) {
+		log.Fatalf("CheckBoard: MajPiece not equal temp != brd (%v != %v)", T_MajPiece, brd.MajPiece)
+	}
+
+	if !(brd.Side == WHITE || brd.Side == BLACK) {
+		log.Fatalf("CheckBoard: Invalid Side %v", brd.Side)
+	}
+
+	if GenerateHash(brd) != brd.PosKey {
+		log.Fatalf("Checkboard: hash generation mismatch")
+	}
+
+	// King position
+	if brd.Pieces[brd.KingSquare[WHITE]] != Wk {
+		log.Fatalf("CheckBoard: Misplaced White King %v", brd.Pieces[brd.KingSquare[WHITE]])
+	}
+	if brd.Pieces[brd.KingSquare[BLACK]] != Bk {
+		log.Fatalf("CheckBoard: Misplaced Black King %v", brd.Pieces[brd.KingSquare[BLACK]])
+	}
+
+	// TODO: Add enp square checking
 }
