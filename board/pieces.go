@@ -73,51 +73,51 @@ func CheckBoard(brd *S_Board) {
 	var T_PieceNum [13]int
 	var T_BigPiece, T_MajPiece, T_Material, T_MinPiece [2]int
 
-	for _, val := range brd.Pieces {
-		if val != EMPTY {
-			piece := val
-			color := PieceCol[piece]
-			if BigPiece[piece] {
-				T_BigPiece[color]++
-				T_Material[color]++
-				T_PieceNum[piece]++
-			} else if MajPiece[piece] {
-				T_MajPiece[color]++
-				T_Material[color]++
-				T_PieceNum[piece]++
-			} else if MinPiece[piece] {
-				T_MinPiece[color]++
-				T_Material[color]++
-				T_PieceNum[piece]++
-			}
-
-			if piece == Wp {
-				T_Material[WHITE]++
-				T_PieceNum[Wp]++
-			}
-
-			if piece == Bp {
-				T_Material[BLACK]++
-				T_PieceNum[Bp]++
+	for piece := Wp; piece <= Bk; piece++ {
+		for pieceIndex := 0; pieceIndex < brd.PieceNum[piece]; pieceIndex++ {
+			sq := brd.PList[piece][pieceIndex]
+			// check weather the piece exists on the board
+			if brd.Pieces[sq] != piece {
+				log.Fatalf("CheckBoard: Invalid Piece Placement")
 			}
 		}
 	}
 
+	// Material count, piece count etc
+	for _, sq120 := range Square64to120 {
+		piece := brd.Pieces[sq120]
+		if piece != EMPTY {
+			color := PieceCol[piece]
+			if BigPiece[piece] {
+				T_BigPiece[color]++
+			}
+			if MajPiece[piece] {
+				T_MajPiece[color]++
+			}
+			if MinPiece[piece] {
+				T_MinPiece[color]++
+			}
+			if MinPiece[piece] {
+				T_MinPiece[color]++
+			}
+
+			T_Material[color] += PieceVal[piece]
+			T_PieceNum[piece]++
+		}
+	}
+
+	// Ensure PieceNums are the same
 	if !reflect.DeepEqual(T_PieceNum, brd.PieceNum) {
-		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
-	}
-	if !reflect.DeepEqual(T_MajPiece, brd.MajPiece) {
-		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
-	}
-	if !reflect.DeepEqual(T_MinPiece, brd.MinPiece) {
-		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
-	}
-	if !reflect.DeepEqual(T_BigPiece, brd.BigPiece) {
-		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
+		log.Fatalf("CheckBoard: PieceNums not matching")
 	}
 
-	if !reflect.DeepEqual(T_Material, brd.Material) {
-		log.Fatalf("CheckBoard: PieceNum not equal\n have: %v, want: %v", brd.PieceNum, T_PieceNum)
+	// Count pawn bitboards
+	wpCount := CountBits(brd.Pawns[WHITE])
+	bpCount := CountBits(brd.Pawns[BLACK])
+	if wpCount != brd.PieceNum[Wp] {
+		log.Fatalf("CheckBoard: White pawn count not matching")
 	}
-
+	if bpCount != brd.PieceNum[Bp] {
+		log.Fatalf("CheckBoard: Black pawn count not matching")
+	}
 }
