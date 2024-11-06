@@ -1,7 +1,7 @@
 package eval
 
 import (
-	"github.com/Greeshmath1909/shadowfax/board"
+	"github.com/Greeshmanth1909/shadowfax/board"
 	"log"
 )
 
