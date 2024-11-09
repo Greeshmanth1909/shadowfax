@@ -86,78 +86,52 @@ func setPiece(piece *board.Piece, color board.Color, whitePiece, blackPiece boar
 
 // checkFile function takes a square and a piece and checks if that piece attacks the square along the square's file
 func checkFile(sq int, piece board.Piece, brd *board.S_Board) bool {
+	sqOffset := [2]int{10, -10}
 	colSquare := sq + 10
-	for {
-		// ignore empty suares
-		if brd.Pieces[colSquare] == board.EMPTY {
-			colSquare += 10
-			continue
+	for _, val := range sqOffset {
+		for {
+			// ignore empty suares
+			if brd.Pieces[colSquare] == board.EMPTY {
+				colSquare += val
+				continue
+			}
+			if brd.Pieces[colSquare] == board.Piece(board.OFFBOARD) {
+				break
+			}
+			if brd.Pieces[colSquare] != piece {
+				// Another piece is 'blocking' the file, no point in searching further
+				break
+			}
+			if brd.Pieces[colSquare] == piece {
+				return true
+			}
 		}
-		if brd.Pieces[colSquare] == board.Piece(board.OFFBOARD) {
-			break
-		}
-		if brd.Pieces[colSquare] != piece {
-			// Another piece is 'blocking' the file, no point in searching further
-			break
-		}
-		if brd.Pieces[colSquare] == piece {
-			return true
-		}
-	}
-	colSquare = sq - 10
-	for {
-		// ignore empty suares
-		if brd.Pieces[colSquare] == board.EMPTY {
-			colSquare -= 10
-			continue
-		}
-		if brd.Pieces[colSquare] == board.Piece(board.OFFBOARD) {
-			break
-		}
-		if brd.Pieces[colSquare] != piece {
-			// Another piece is 'blocking' the file, no point in searching further
-			break
-		}
-		if brd.Pieces[colSquare] == piece {
-			return true
-		}
+
 	}
 	return false
 }
 
 // checkRank function checks weather square `sq` is attacked by the piece `piece` along the square's rank
 func checkRank(sq int, piece board.Piece, brd *board.S_Board) bool {
+	sqOffset := [2]int{1, -1}
 	rowSquare := sq + 1
-	for {
-		if brd.Pieces[rowSquare] == board.Piece(board.OFFBOARD) {
-			break
+	for _, val := range sqOffset {
+		for {
+			if brd.Pieces[rowSquare] == board.Piece(board.OFFBOARD) {
+				break
+			}
+			if brd.Pieces[rowSquare] == board.EMPTY {
+				rowSquare += val
+				continue
+			}
+			if brd.Pieces[rowSquare] == piece {
+				return true
+			}
+			if brd.Pieces[rowSquare] != piece {
+				break
+			}
 		}
-		if brd.Pieces[rowSquare] == board.EMPTY {
-			rowSquare += 1
-			continue
-		}
-		if brd.Pieces[rowSquare] == piece {
-			return true
-		}
-		if brd.Pieces[rowSquare] != piece {
-			break
-		}
-	}
-	rowSquare = sq - 1
-	for {
-		if brd.Pieces[rowSquare] == board.Piece(board.OFFBOARD) {
-			break
-		}
-		if brd.Pieces[rowSquare] == board.EMPTY {
-			rowSquare -= 1
-			continue
-		}
-		if brd.Pieces[rowSquare] == piece {
-			return true
-		}
-		if brd.Pieces[rowSquare] != piece {
-			break
-		}
+
 	}
 	return false
 }
