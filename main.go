@@ -43,12 +43,9 @@ func main() {
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 
-	board.PrintBitBoard(boardStructure.Pawns[board.WHITE])
-	fmt.Println("")
-	board.PrintBitBoard(boardStructure.Pawns[board.BLACK])
-	fmt.Println("")
-	board.PrintBitBoard(boardStructure.Pawns[board.BOTH])
-	fmt.Println("")
+	startString = "rnbq1rk1/ppp2ppp/3bpn2/3p4/3P4/2P2N2/PP2PPPP/RNBQKB1R w KQ - 2 7"
+	position.Parse_FEN(&startString, &boardStructure)
+	position.PrintBoard(&boardStructure)
 
 	board.CheckBoard(&boardStructure)
 

@@ -164,71 +164,25 @@ func checkRank(sq int, piece board.Piece, brd *board.S_Board) bool {
 
 // checkDiagonals function checks all squares along possible diagonals for the attacker piece that isn't blocked by another piece
 func checkDiagonals(sq int, piece board.Piece, brd *board.S_Board) bool {
-	// upper left
-	dLeft := sq - 11
-	for {
-		if brd.Pieces[dLeft] == board.Piece(board.OFFBOARD) {
-			break
+	sqOffset := [4]int{-11, 11, -9, 9}
+	for _, val := range sqOffset {
+		dLeft := sq + val
+		for {
+			if brd.Pieces[dLeft] == board.Piece(board.OFFBOARD) {
+				break
+			}
+			if brd.Pieces[dLeft] == board.EMPTY {
+				dLeft += val
+				continue
+			}
+			if brd.Pieces[dLeft] == piece {
+				return true
+			}
+			if brd.Pieces[dLeft] != piece {
+				break
+			}
 		}
-		if brd.Pieces[dLeft] == board.EMPTY {
-			dLeft -= 11
-			continue
-		}
-		if brd.Pieces[dLeft] == piece {
-			return true
-		}
-		if brd.Pieces[dLeft] != piece {
-			break
-		}
-	}
-	dLeft = sq + 11
-	for {
-		if brd.Pieces[dLeft] == board.Piece(board.OFFBOARD) {
-			break
-		}
-		if brd.Pieces[dLeft] == board.EMPTY {
-			dLeft += 11
-			continue
-		}
-		if brd.Pieces[dLeft] == piece {
-			return true
-		}
-		if brd.Pieces[dLeft] != piece {
-			break
-		}
-	}
-	dLeft = sq + 9
-	for {
-		if brd.Pieces[dLeft] == board.Piece(board.OFFBOARD) {
-			break
-		}
-		if brd.Pieces[dLeft] == board.EMPTY {
-			dLeft += 9
-			continue
-		}
-		if brd.Pieces[dLeft] == piece {
-			return true
-		}
-		if brd.Pieces[dLeft] != piece {
-			break
-		}
-	}
-	dLeft = sq - 9
-	for {
-		if brd.Pieces[dLeft] == board.Piece(board.OFFBOARD) {
-			break
-		}
-		if brd.Pieces[dLeft] == board.EMPTY {
-			dLeft -= 9
-			continue
-		}
-		if brd.Pieces[dLeft] == piece {
-			return true
-		}
-		if brd.Pieces[dLeft] != piece {
-			break
-		}
-	}
 
+	}
 	return false
 }
