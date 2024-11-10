@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
+	"github.com/Greeshmanth1909/shadowfax/eval"
 	"github.com/Greeshmanth1909/shadowfax/position"
 	"github.com/Greeshmanth1909/shadowfax/util"
 )
@@ -23,6 +24,9 @@ func main() {
 
 	startString := position.StartPosition
 	var boardStructure board.S_Board
+	for i := range boardStructure.Pieces {
+		boardStructure.Pieces[i] = board.Piece(board.OFFBOARD)
+	}
 	position.Parse_FEN(&startString, &boardStructure)
 
 	fmt.Println("******")
@@ -47,6 +51,22 @@ func main() {
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 
-	board.CheckBoard(&boardStructure)
+	//board.CheckBoard(&boardStructure)
 
+	startString = "8/1q6/8/8/8/8/8/8 w - - 0 1"
+	position.Parse_FEN(&startString, &boardStructure)
+	position.PrintBoard(&boardStructure)
+	fmt.Println(board.Square64to120)
+
+	for i, val := range board.Square64to120 {
+		//fmt.Println(val)
+		if i%8 == 0 {
+			fmt.Print("\n")
+		}
+		if eval.SquareAttacked(board.Square(val), board.BLACK, &boardStructure) {
+			fmt.Print("x ")
+		} else {
+			fmt.Print(". ")
+		}
+	}
 }

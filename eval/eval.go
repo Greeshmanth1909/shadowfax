@@ -1,6 +1,7 @@
 package eval
 
 import (
+	_ "fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"log"
 )
@@ -11,6 +12,9 @@ func SquareAttacked(sq120 board.Square, side board.Color, brd *board.S_Board) bo
 		log.Fatalf("SquareAttacked: offboard input given %v", sq120)
 	}
 	sq := int(sq120)
+	if sq >= 119 {
+		return false
+	}
 
 	// check for pawn attacks
 	if side == board.WHITE {
@@ -39,7 +43,7 @@ func SquareAttacked(sq120 board.Square, side board.Color, brd *board.S_Board) bo
 	setPiece(&attackerPiece, side, board.Wr, board.Br) // pieces of same piece-type but opposite color MUST be used here
 	rookAlongFile := checkFile(sq, attackerPiece, brd)
 	rookAlongRank := checkRank(sq, attackerPiece, brd)
-	if rookAlongFile || rookAlongRank {
+	if rookAlongRank || rookAlongFile {
 		return true
 	}
 
@@ -66,7 +70,7 @@ func SquareAttacked(sq120 board.Square, side board.Color, brd *board.S_Board) bo
 		switch brd.Pieces[square] {
 		case board.Piece(board.OFFBOARD):
 		case board.EMPTY:
-		case piece:
+		case attackerPiece:
 			return true
 		}
 	}
@@ -87,10 +91,13 @@ func setPiece(piece *board.Piece, color board.Color, whitePiece, blackPiece boar
 // checkFile function takes a square and a piece and checks if that piece attacks the square along the square's file
 func checkFile(sq int, piece board.Piece, brd *board.S_Board) bool {
 	sqOffset := [2]int{10, -10}
-	colSquare := sq + 10
 	for _, val := range sqOffset {
+		colSquare := sq + val
 		for {
 			// ignore empty suares
+			if colSquare >= 119 || colSquare <= 0 {
+				break
+			}
 			if brd.Pieces[colSquare] == board.EMPTY {
 				colSquare += val
 				continue
@@ -114,9 +121,13 @@ func checkFile(sq int, piece board.Piece, brd *board.S_Board) bool {
 // checkRank function checks weather square `sq` is attacked by the piece `piece` along the square's rank
 func checkRank(sq int, piece board.Piece, brd *board.S_Board) bool {
 	sqOffset := [2]int{1, -1}
-	rowSquare := sq + 1
 	for _, val := range sqOffset {
+		rowSquare := sq + val
 		for {
+			//fmt.Printf("rowSq: %v; sq: %v\n", rowSquare, sq)
+			if rowSquare >= 119 || rowSquare <= 0 {
+				break
+			}
 			if brd.Pieces[rowSquare] == board.Piece(board.OFFBOARD) {
 				break
 			}
@@ -124,11 +135,11 @@ func checkRank(sq int, piece board.Piece, brd *board.S_Board) bool {
 				rowSquare += val
 				continue
 			}
-			if brd.Pieces[rowSquare] == piece {
-				return true
-			}
 			if brd.Pieces[rowSquare] != piece {
 				break
+			}
+			if brd.Pieces[rowSquare] == piece {
+				return true
 			}
 		}
 
@@ -142,6 +153,9 @@ func checkDiagonals(sq int, piece board.Piece, brd *board.S_Board) bool {
 	for _, val := range sqOffset {
 		dLeft := sq + val
 		for {
+			if dLeft >= 119 || dLeft <= 0 {
+				break
+			}
 			if brd.Pieces[dLeft] == board.Piece(board.OFFBOARD) {
 				break
 			}
