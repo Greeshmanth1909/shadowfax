@@ -39,6 +39,9 @@ func UpdatePieceList(brd *S_Board) {
 	}
 
 	for sq, val := range brd.Pieces {
+		if int(val) == 100 {
+			continue
+		}
 		if val != EMPTY {
 			piece := val
 			color := PieceCol[piece]
