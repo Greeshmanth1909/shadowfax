@@ -10,80 +10,77 @@ type S_Move struct {
 }
 
 // setFromSquare function sets the given square to the corresponding bits in the move int
-func setFromsquare(mv *S_Move, square board.Piece) {
+func SetFromSquare(mv *S_Move, square board.Square) {
 	mv.Move |= uint32(square)
 }
 
 // setToSquare
-func setToSquare(mv *S_Move, square board.Square) {
+func SetToSquare(mv *S_Move, square board.Square) {
 	mv.Move |= (uint32(square) << 7)
 }
 
 // setCapturedPiece
-func setCapturedPiece(mv *S_Move, piece board.Piece) {
+func SetCapturedPiece(mv *S_Move, piece board.Piece) {
 	mv.Move |= (uint32(piece) << 14)
 }
 
 // setEnP sets the enpassant flag
-func setEnP(mv *S_Move) {
+func SetEnP(mv *S_Move) {
 	mv.Move |= uint32(1) << 18
 }
 
 // setPawnStart sets the pawn start move flag
-func setPawnStart(mv *S_Move) {
+func SetPawnStart(mv *S_Move) {
 	mv.Move |= uint32(1) << 19
 }
 
-func setPromotedPiece(mv *S_Move, piece board.Piece) {
+func SetPromotedPiece(mv *S_Move, piece board.Piece) {
 	mv.Move |= (uint32(piece) << 20)
 }
 
-func setCastleFlag(mv *S_Move) {
+func SetCastleFlag(mv *S_Move) {
 	mv.Move |= uint32(1) << 24
 }
 
 // returns from square
-func getFromsquare(mv *S_Move) uint32 {
-	return mv.Move & 0x3f
+func GetFromSquare(mv *S_Move) board.Square {
+	return board.Square(mv.Move & 0x7f)
 }
 
 // returns to square
-func getToSquare(mv *S_Move) uint32 {
-	return ((mv.Move >> 7) & 0xf)
+func GetToSquare(mv *S_Move) board.Square {
+	return board.Square((mv.Move >> 7) & 0x7f)
 }
 
 // returns captured piece
-func getCapturedPiece(mv *S_Move) uint32 {
-	return (mv.Move >> 14) & 0xf
+func GetCapturedPiece(mv *S_Move) board.Piece {
+	return board.Piece((mv.Move >> 14) & 0xf)
 }
 
 // returns true if enp flag is set
-func getEnP(mv *S_Move) bool {
-	if mv.Move&0x40000 == 1 {
+func GetEnP(mv *S_Move) bool {
+	if mv.Move&0x40000 != 0 {
 		return true
 	}
 	return false
 }
 
 // returns true if pawnStart flag is set
-func getPawnStart(mv *S_Move) bool {
-	if mv.Move&80000 == 1 {
+func GetPawnStart(mv *S_Move) bool {
+	if mv.Move&0x80000 != 0 {
 		return true
 	}
 	return false
 }
 
 // returns promoted piece, if any
-func getPromotedPiece(mv *S_Move) bool {
-	if ((mv.Move >> 20) & 0xf) == 1 {
-		return true
-	}
-	return false
+func GetPromotedPiece(mv *S_Move) board.Piece {
+	return board.Piece((mv.Move >> 20) & 0xf)
 }
 
 // returns true if castle flag is set
-func getCastleFlag(mv *S_Move) bool {
-	if mv.Move&0x1000000 == 1 {
+func GetCastleFlag(mv *S_Move) bool {
+	if mv.Move&0x1000000 != 0 {
 		return true
 	}
 	return false
