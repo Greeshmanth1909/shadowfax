@@ -41,3 +41,50 @@ func setPromotedPiece(mv *S_Move, piece board.Piece) {
 func setCastleFlag(mv *S_Move) {
 	mv.Move |= uint32(1) << 24
 }
+
+// returns from square
+func getFromsquare(mv *S_Move) uint32 {
+	return mv.Move & 0x3f
+}
+
+// returns to square
+func getToSquare(mv *S_Move) uint32 {
+	return ((mv.Move >> 7) & 0xf)
+}
+
+// returns captured piece
+func getCapturedPiece(mv *S_Move) uint32 {
+	return (mv.Move >> 14) & 0xf
+}
+
+// returns true if enp flag is set
+func getEnP(mv *S_Move) bool {
+	if mv.Move&0x40000 == 1 {
+		return true
+	}
+	return false
+}
+
+// returns true if pawnStart flag is set
+func getPawnStart(mv *S_Move) bool {
+	if mv.Move&80000 == 1 {
+		return true
+	}
+	return false
+}
+
+// returns promoted piece, if any
+func getPromotedPiece(mv *S_Move) bool {
+	if ((mv.Move >> 20) & 0xf) == 1 {
+		return true
+	}
+	return false
+}
+
+// returns true if castle flag is set
+func getCastleFlag(mv *S_Move) bool {
+	if mv.Move&0x1000000 == 1 {
+		return true
+	}
+	return false
+}
