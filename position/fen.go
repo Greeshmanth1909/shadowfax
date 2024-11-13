@@ -16,6 +16,11 @@ Parse_FEN function parses the fen string and places the pieces in the board_stru
 	This function assumes valid fen strings
 */
 func Parse_FEN(fen *string, brd *board.S_Board) error {
+	// set all squares to offboard
+	for i := range brd.Pieces {
+		brd.Pieces[i] = board.Piece(board.OFFBOARD)
+	}
+
 	splitFen := strings.Split(*fen, " ")
 
 	if len(splitFen) != 6 {
