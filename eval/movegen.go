@@ -2,7 +2,14 @@ package eval
 
 import (
 	"github.com/Greeshmanth1909/shadowfax/board"
+	"log"
+	"os"
 )
+
+func init() {
+	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	log.SetOutput(os.Stdout)
+}
 
 const MAXPOSITIONMOVES = 256
 
