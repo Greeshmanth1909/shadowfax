@@ -15,6 +15,7 @@ func main() {
 	startString := position.StartPosition
 	var boardStructure board.S_Board
 	position.Parse_FEN(&startString, &boardStructure)
+	position.PrintBoard(&boardStructure)
 
 	startString = "8/8/8/4P3/8/2B5/8/8 w - - 0 1"
 	position.Parse_FEN(&startString, &boardStructure)
