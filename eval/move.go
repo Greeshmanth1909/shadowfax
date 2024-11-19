@@ -88,21 +88,21 @@ func GetCastleFlag(mv *S_Move) bool {
 
 // Move function uses the above helpers to generate a move integer
 func Move(frm, to board.Square, capt, pro board.Piece, f1 uint32) uint32 {
-    mv := S_Move{}
-    SetFromSquare(&mv, frm)
-    SetToSquare(&mv, to)
-    SetCapturedPiece(&mv, capt)
-    SetPromotedPiece(&mv, pro)
+	mv := S_Move{}
+	SetFromSquare(&mv, frm)
+	SetToSquare(&mv, to)
+	SetCapturedPiece(&mv, capt)
+	SetPromotedPiece(&mv, pro)
 
-    if f1 == uint32(1) << 18 {
-        // set enp
-        SetEnP(&mv)
-    }
-    if f1 == uint32(1) << 24 {
-        SetCastleFlag(&mv)
-    }
-    if f1 == uint32(1) << 19 {
-        SetPawnStart(&mv)
-    }
-    return mv.Move
+	if f1 == uint32(1)<<18 {
+		// set enp
+		SetEnP(&mv)
+	}
+	if f1 == uint32(1)<<24 {
+		SetCastleFlag(&mv)
+	}
+	if f1 == uint32(1)<<19 {
+		SetPawnStart(&mv)
+	}
+	return mv.Move
 }

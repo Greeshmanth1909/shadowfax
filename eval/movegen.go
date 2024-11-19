@@ -11,6 +11,10 @@ func init() {
 	log.SetOutput(os.Stdout)
 }
 
+const FLAGENP = uint32(1) << 18
+const FLAGPS = uint32(1) << 19
+const FLAGC = uint32(1) << 24
+
 const MAXPOSITIONMOVES = 256
 
 type S_MoveList struct {
@@ -35,6 +39,53 @@ func AddEnPassantMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.Count++
 }
 
+func AddWhitePawnCapMove(brd *board.S_Board, from, to board.Square, capt board.Piece, list *S_MoveList) {
+	if board.RankArr[from] == board.RANK_7 {
+		AddCaptureMove(brd, Move(from, to, capt, board.Wq, 0), list)
+		AddCaptureMove(brd, Move(from, to, capt, board.Wb, 0), list)
+		AddCaptureMove(brd, Move(from, to, capt, board.Wn, 0), list)
+		AddCaptureMove(brd, Move(from, to, capt, board.Wr, 0), list)
+	} else {
+		AddCaptureMove(brd, Move(from, to, capt, board.EMPTY, 0), list)
+	}
+}
+
+func AddWhitePawnMove(brd *board.S_Board, from, to board.Square, list *S_MoveList) {
+	if board.RankArr[from] == board.RANK_7 {
+		AddQuietMove(brd, Move(from, to, board.EMPTY, board.Wq, 0), list)
+		AddQuietMove(brd, Move(from, to, board.EMPTY, board.Wr, 0), list)
+		AddQuietMove(brd, Move(from, to, board.EMPTY, board.Wk, 0), list)
+		AddQuietMove(brd, Move(from, to, board.EMPTY, board.Wb, 0), list)
+	} else {
+		AddQuietMove(brd, Move(from, to, board.EMPTY, board.EMPTY, 0), list)
+	}
+}
+
 func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
-	list.Count++
+	side := brd.Side
+
+	if side == board.WHITE {
+		for _, sq := range brd.Plist[board.Wp] {
+			if sq+9 != board.OFFBOARD {
+				if board.PieceCol[brd.Pieces[sq+9]] == board.BLACK {
+					AddWhitePawnCapMove(brd, sq, sq+9, list)
+				}
+			}
+			if sq+11 != board.OFFBOARD {
+				if board.PieceCol[brd.Pieces[sq+11]] == board.BLACK {
+					AddWhitePawnCapMove(ved, sq, sq+11, list)
+				}
+			}
+			if brd.Pieces[sq+10] == board.EMPTY {
+				AddWhitePawnMove(sq, sq+10, list)
+			}
+			if board.RankArr[sq] == board.RANK_2 && brd.Pieces[sq+10] == board.EMPTY && brd.Pieces[sq+20] == board.EMPTY {
+				AddQuietMove(brd, Move(sq, sq+20, board.EMPTY, board.EMPTY, FLAGPS), list)
+			}
+
+			if sq+11 == brd.EnP {
+				AddQuietMove(brd, Move(sq, sq+11, board.EMPTY, board.EMPTY, FLAGENP), list)
+			}
+		}
+	}
 }
