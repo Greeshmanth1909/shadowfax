@@ -14,6 +14,8 @@ func TestMove(t *testing.T) {
 	SetCapturedPiece(&move, board.Bk)
 	SetPromotedPiece(&move, board.Wq)
 
+    newMv := Move(board.A7, board.B8, board.Bk, board.Wq, 0)
+    assert.Equal(t, newMv, move.Move, "error with Move func")
 	frmSq := GetFromSquare(&move)
 	toSq := GetToSquare(&move)
 	capPiece := GetCapturedPiece(&move)

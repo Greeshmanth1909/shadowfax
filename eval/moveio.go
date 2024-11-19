@@ -64,3 +64,12 @@ func GetPromotedPieceAlg(p board.Piece) string {
 		return "q"
 	}
 }
+
+// PrintMoveList function prints all the moves in a move list to the screen
+func PrintMoveList(list *S_MoveList) {
+    for _, val := range list.MoveList {
+        PrintMove(&val)
+        fmt.Println("Score: ", val.Score)
+    }
+    fmt.Println("Total move list: ", list.Count)
+}
