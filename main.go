@@ -21,13 +21,13 @@ func main() {
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 
-	fmt.Println(board.A7)
+	startString = "rnbqkb1r/pp1p1pPp/8/2p1pP2/1P1P4/3P3P/P1P1P3/RNBQKBNR w KQkq e6 0 1"
+	position.Parse_FEN(&startString, &boardStructure)
+	position.PrintBoard(&boardStructure)
 
-	var move eval.S_Move
-	eval.SetFromSquare(&move, board.A7)
-	eval.SetToSquare(&move, board.B8)
-	eval.SetCapturedPiece(&move, board.Bk)
-	eval.SetPromotedPiece(&move, board.Wr)
-	eval.PrintMove(&move)
-
+	var list eval.S_MoveList
+	eval.GenerateAllMoves(&boardStructure, &list)
+	eval.PrintMoveList(&list)
+	fmt.Println(boardStructure.EnP)
+	fmt.Println(eval.ConvSq120ToAlge(boardStructure.EnP))
 }

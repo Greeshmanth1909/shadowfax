@@ -67,7 +67,11 @@ func GetPromotedPieceAlg(p board.Piece) string {
 
 // PrintMoveList function prints all the moves in a move list to the screen
 func PrintMoveList(list *S_MoveList) {
-	for _, val := range list.MoveList {
+	for i, val := range list.MoveList {
+		if val.Move == 0 {
+			break
+		}
+		fmt.Printf("%v. Move: ", i+1)
 		PrintMove(&val)
 		fmt.Println("Score: ", val.Score)
 	}

@@ -66,12 +66,12 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 
 	if side == board.WHITE {
 		for _, sq := range brd.PList[board.Wp] {
-			if sq+9 != int(board.OFFBOARD) {
+			if brd.Pieces[sq+9] != board.Piece(board.OFFBOARD) {
 				if board.PieceCol[brd.Pieces[sq+9]] == board.BLACK {
 					AddWhitePawnCapMove(brd, board.Square(sq), board.Square(sq+9), brd.Pieces[sq+9], list)
 				}
 			}
-			if sq+11 != int(board.OFFBOARD) {
+			if brd.Pieces[sq+11] != board.Piece(board.OFFBOARD) {
 				if board.PieceCol[brd.Pieces[sq+11]] == board.BLACK {
 					AddWhitePawnCapMove(brd, board.Square(sq), board.Square(sq+11), brd.Pieces[sq+11], list)
 				}
@@ -82,9 +82,11 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 			if board.RankArr[sq] == board.RANK_2 && brd.Pieces[sq+10] == board.EMPTY && brd.Pieces[sq+20] == board.EMPTY {
 				AddQuietMove(brd, Move(board.Square(sq), board.Square(sq+20), board.EMPTY, board.EMPTY, FLAGPS), list)
 			}
-
-			if sq+11 == int(brd.EnP) {
+			if board.Square(sq+11) == (brd.EnP) {
 				AddQuietMove(brd, Move(board.Square(sq), board.Square(sq+11), board.EMPTY, board.EMPTY, FLAGENP), list)
+			}
+			if board.Square(sq+9) == (brd.EnP) {
+				AddQuietMove(brd, Move(board.Square(sq), board.Square(sq+9), board.EMPTY, board.EMPTY, FLAGENP), list)
 			}
 		}
 	}
