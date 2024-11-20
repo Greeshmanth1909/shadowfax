@@ -1,6 +1,7 @@
 package eval
 
 import (
+	"fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"log"
 	"os"
@@ -24,8 +25,8 @@ type S_MoveList struct {
 
 var LoopSlidingPieces = [8]board.Piece{board.Wb, board.Wr, board.Wq, board.EMPTY, board.Bb, board.Br, board.Bq, board.EMPTY}
 var LoopSlidingPiecesIndex = [2]int{0, 4}
-var NonSlidingPieces = []board.Piece{board.Wn, board.EMPTY, board.Bn, board.EMPTY}
-var NonSlidingPiecesIndex = [2]int{0, 2}
+var NonSlidingPieces = [6]board.Piece{board.Wn, board.Wk, board.EMPTY, board.Bn, board.Bk, board.EMPTY}
+var NonSlidingPiecesIndex = [2]int{0, 3}
 
 func AddQuietMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
@@ -45,6 +46,13 @@ func AddEnPassantMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 }
 
 func AddWhitePawnCapMove(brd *board.S_Board, from, to board.Square, capt board.Piece, list *S_MoveList) {
+	if from == board.OFFBOARD || to == board.OFFBOARD {
+		log.Fatalf("offboard square given\n")
+	}
+	if capt == board.EMPTY {
+		log.Fatalf("invalid capt piece (%v)", capt)
+	}
+
 	if board.RankArr[from] == board.RANK_7 {
 		AddCaptureMove(brd, Move(from, to, capt, board.Wq, 0), list)
 		AddCaptureMove(brd, Move(from, to, capt, board.Wb, 0), list)
@@ -56,6 +64,10 @@ func AddWhitePawnCapMove(brd *board.S_Board, from, to board.Square, capt board.P
 }
 
 func AddWhitePawnMove(brd *board.S_Board, from, to board.Square, list *S_MoveList) {
+	if from == board.OFFBOARD || to == board.OFFBOARD {
+		log.Fatalf("offboard square given\n")
+	}
+
 	if board.RankArr[from] == board.RANK_7 {
 		AddQuietMove(brd, Move(from, to, board.EMPTY, board.Wq, 0), list)
 		AddQuietMove(brd, Move(from, to, board.EMPTY, board.Wr, 0), list)
@@ -67,6 +79,13 @@ func AddWhitePawnMove(brd *board.S_Board, from, to board.Square, list *S_MoveLis
 }
 
 func AddBlackPawnCapMove(brd *board.S_Board, from, to board.Square, capt board.Piece, list *S_MoveList) {
+	if from == board.OFFBOARD || to == board.OFFBOARD {
+		log.Fatalf("offboard square given\n")
+	}
+	if capt == board.EMPTY {
+		log.Fatalf("invalid capt piece (%v)", capt)
+	}
+
 	if board.RankArr[from] == board.RANK_2 {
 		AddCaptureMove(brd, Move(from, to, capt, board.Bq, 0), list)
 		AddCaptureMove(brd, Move(from, to, capt, board.Bb, 0), list)
@@ -78,6 +97,10 @@ func AddBlackPawnCapMove(brd *board.S_Board, from, to board.Square, capt board.P
 }
 
 func AddBlackPawnMove(brd *board.S_Board, from, to board.Square, list *S_MoveList) {
+	if from == board.OFFBOARD || to == board.OFFBOARD {
+		log.Fatalf("offboard square given\n")
+	}
+
 	if board.RankArr[from] == board.RANK_2 {
 		AddQuietMove(brd, Move(from, to, board.EMPTY, board.Bq, 0), list)
 		AddQuietMove(brd, Move(from, to, board.EMPTY, board.Br, 0), list)
@@ -89,6 +112,7 @@ func AddBlackPawnMove(brd *board.S_Board, from, to board.Square, list *S_MoveLis
 }
 
 func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
+	board.CheckBoard(brd)
 	side := brd.Side
 
 	if side == board.WHITE {
@@ -149,8 +173,35 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 
 	// Sliding Pieces
 	startIndex := LoopSlidingPiecesIndex[side]
-	for LoopSlidingPieces[startIndex] != board.EMPTY {
-		break
+	piece := LoopSlidingPieces[startIndex]
+	for piece != board.EMPTY {
+		for _, sq := range brd.PList[piece] {
+			if sq == 0 {
+				break
+			}
+			fmt.Printf("slider pieceInd: %v, piece: %v\n", sq, piece)
+			if !board.ValidatePiece(brd.Pieces[sq]) {
+				log.Fatalf("Invalid slider piece (%v)", brd.Pieces[sq])
+			}
+		}
+		startIndex++
+		piece = LoopSlidingPieces[startIndex]
 	}
 
+	// NonSlider Pieces
+	startIndex = NonSlidingPiecesIndex[side]
+	piece = NonSlidingPieces[startIndex]
+	for piece != board.EMPTY {
+		for _, sq := range brd.PList[piece] {
+			if sq == 0 {
+				break
+			}
+			fmt.Printf("non slide pieceInd: %v, piece: %v\n", sq, piece)
+			if !board.ValidatePiece(brd.Pieces[sq]) {
+				log.Fatalf("Invalid slider piece (%v)", brd.Pieces[sq])
+			}
+		}
+		startIndex++
+		piece = NonSlidingPieces[startIndex]
+	}
 }

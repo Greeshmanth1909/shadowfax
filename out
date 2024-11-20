@@ -11,7 +11,7 @@ R N B Q K B N R
 side: w
 enp: -
 Castling: 15
-hash: 56FE619497A3AD21
+hash: 83A9D0F0C329199F
 . . . . . . . . 
 . . . . . . . . 
 . . . . . . . . 
@@ -23,7 +23,7 @@ hash: 56FE619497A3AD21
 side: w
 enp: -
 Castling: 0
-hash: BB379A1C7EA76ED7
+hash: 57FACB0BC75B6FFB
 r n b q k b n r 
 p . p . p . . . 
 . . . p . . . p 
@@ -34,50 +34,60 @@ P P . P . P p P
 R N B Q K B . R 
 side: b
 Castling: 15
-hash: 7930589473C1769B
+hash: 5EB730CB331B18F
 [37 56 62 64 74 78 81 83 85 0]
-1. Move: g2f1q
+slider pieceInd: 93, piece: 9slider pieceInd: 96, piece: 9slider pieceInd: 0, piece: 9slider pieceInd: 91, piece: 10slider pieceInd: 98, piece: 10slider pieceInd: 0, piece: 10slider pieceInd: 94, piece: 11slider pieceInd: 0, piece: 11non slide pieceInd: 92, piece: 8non slide pieceInd: 97, piece: 8non slide pieceInd: 0, piece: 81. Move: g2h1q
 Score:  0
-2. Move: g2f1b
+2. Move: g2h1b
 Score:  0
-3. Move: g2f1q
+3. Move: g2h1q
 Score:  0
-4. Move: g2f1r
+4. Move: g2h1r
 Score:  0
-5. Move: g2g1q
+5. Move: g2f1q
 Score:  0
-6. Move: g2g1r
+6. Move: g2f1b
 Score:  0
-7. Move: g2g1q
+7. Move: g2f1q
 Score:  0
-8. Move: g2g1b
+8. Move: g2f1r
 Score:  0
-9. Move: f4f3
+9. Move: g2g1q
 Score:  0
-10. Move: f4e3
+10. Move: g2g1r
 Score:  0
-11. Move: b5b4
+11. Move: g2g1q
 Score:  0
-12. Move: d5c4
+12. Move: g2g1b
 Score:  0
-13. Move: d5d4
+13. Move: f4f3
 Score:  0
-14. Move: h6h5
+14. Move: f4e3
 Score:  0
-15. Move: a7a6
+15. Move: b5c4
 Score:  0
-16. Move: a7a5
+16. Move: b5b4
 Score:  0
-17. Move: c7d6
+17. Move: d5e4
 Score:  0
-18. Move: c7c6
+18. Move: d5c4
 Score:  0
-19. Move: c7c5
+19. Move: d5d4
 Score:  0
-20. Move: e7e6
+20. Move: h6h5
 Score:  0
-21. Move: e7e5
+21. Move: a7a6
 Score:  0
-Total move list:  21
+22. Move: a7a5
+Score:  0
+23. Move: c7c6
+Score:  0
+24. Move: c7c5
+Score:  0
+25. Move: e7e6
+Score:  0
+26. Move: e7e5
+Score:  0
+Total move list:  26
 45
 e3

@@ -21,7 +21,7 @@ func main() {
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 
-	startString = "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R b KQkq e3 0 1"
+	startString = "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R w KQkq e3 0 1"
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 
@@ -29,7 +29,7 @@ func main() {
 
 	var list eval.S_MoveList
 	eval.GenerateAllMoves(&boardStructure, &list)
-	eval.PrintMoveList(&list)
-	fmt.Println(boardStructure.EnP)
-	fmt.Println(eval.ConvSq120ToAlge(boardStructure.EnP))
+	// eval.PrintMoveList(&list)
+	// fmt.Println(boardStructure.EnP)
+	// fmt.Println(eval.ConvSq120ToAlge(boardStructure.EnP))
 }
