@@ -23,7 +23,7 @@ type S_MoveList struct {
 }
 
 var LoopSlidingPieces = [8]board.Piece{board.Wb, board.Wr, board.Wq, board.EMPTY, board.Bb, board.Br, board.Bq, board.EMPTY}
-var LoopSlidingPicesIndex = [2]int{0, 4}
+var LoopSlidingPiecesIndex = [2]int{0, 4}
 var NonSlidingPieces = []board.Piece{board.Wn, board.EMPTY, board.Bn, board.EMPTY}
 var NonSlidingPiecesIndex = [2]int{0, 2}
 
