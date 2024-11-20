@@ -190,3 +190,10 @@ func CheckBoard(brd *S_Board) {
 
 	// TODO: Add enp square checking
 }
+
+func ValidatePiece(p Piece) bool {
+	if int(p) >= int(Wp) && int(p) <= int(Bk) {
+		return true
+	}
+	return false
+}
