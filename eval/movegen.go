@@ -22,6 +22,11 @@ type S_MoveList struct {
 	Count    int
 }
 
+var LoopSlidingPieces = [8]board.Piece{board.Wb, board.Wr, board.Wq, board.EMPTY, board.Bb, board.Br, board.Bq, board.EMPTY}
+var LoopSlidingPicesIndex = [2]int{0, 4}
+var NonSlidingPieces = []board.Piece{board.Wn, board.EMPTY, board.Bn, board.EMPTY}
+var NonSlidingPiecesIndex = [2]int{0, 2}
+
 func AddQuietMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
 	list.MoveList[list.Count].Score = 0
@@ -141,4 +146,11 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 			}
 		}
 	}
+
+	// Sliding Pieces
+	startIndex := LoopSlidingPiecesIndex[side]
+	for LoopSlidingPieces[startIndex] != board.EMPTY {
+		break
+	}
+
 }

@@ -17,6 +17,7 @@ var MajPiece = [13]bool{false, false, false, false, true, true, true, false, fal
 var MinPiece = [13]bool{false, false, true, true, false, false, false, false, true, true, false, false, false}
 var PieceVal = [13]int{0, 100, 325, 325, 550, 1000, 50000, 100, 325, 325, 550, 1000, 50000}
 var PieceCol = [13]Color{BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, BLACK, BLACK, BLACK, BLACK, BLACK}
+var PieceSlides = [13]bool{false, false, false, true, true, true, false, false, false, true, true, true, false}
 
 // UpdatePieceList iterates over the entire board and adds updates the existing pieces to the board struct accordingly
 func UpdatePieceList(brd *S_Board) {
