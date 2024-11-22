@@ -17,15 +17,7 @@ func main() {
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 
-	startString = "8/8/8/4P3/8/2B5/8/8 w - - 0 1"
-	position.Parse_FEN(&startString, &boardStructure)
-	position.PrintBoard(&boardStructure)
-
-	startString = "rnbqkbnr/p1p1p3/3p3p/1p1p4/2P1Pp2/8/PP1P1PpP/RNBQKB1R w KQkq e3 0 1"
-	position.Parse_FEN(&startString, &boardStructure)
-	position.PrintBoard(&boardStructure)
-
-	startString = "6k1/8/2q5/4Q3/8/8/8/6K1 w - - 0 1"
+	startString = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 

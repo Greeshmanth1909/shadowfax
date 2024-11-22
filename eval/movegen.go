@@ -157,6 +157,24 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 				AddQuietMove(brd, Move(board.Square(sq), board.Square(sq+9), board.EMPTY, board.EMPTY, FLAGENP), list)
 			}
 		}
+
+        if brd.CastlePerm & int(board.WKCT) != 0 {
+            if brd.Pieces[board.G1] == board.EMPTY && brd.Pieces[board.F1] == board.EMPTY {
+                if !SquareAttacked(board.E1, board.BLACK, brd) && !SquareAttacked(board.F1, board.BLACK, brd) {
+                    AddQuietMove(brd, Move(board.E1, board.G1, board.EMPTY, board.EMPTY, FLAGC), list)
+                }
+            } 
+        }
+
+        if brd.CastlePerm & int(board.WQCT) != 0 {
+            if brd.Pieces[board.D1] == board.EMPTY && brd.Pieces[board.C1] == board.EMPTY && brd.Pieces[board.B1] == board.EMPTY {
+                if !SquareAttacked(board.E1, board.BLACK, brd) && !SquareAttacked(board.D1, board.BLACK, brd) {
+                    AddQuietMove(brd, Move(board.E1, board.C1, board.EMPTY, board.EMPTY, FLAGC), list)
+                }
+            } 
+        }
+
+
 	}
 	if side == board.BLACK {
 		for _, sq := range brd.PList[board.Bp] {
@@ -186,6 +204,23 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 				AddQuietMove(brd, Move(board.Square(sq), board.Square(sq-9), board.EMPTY, board.EMPTY, FLAGENP), list)
 			}
 		}
+        if brd.CastlePerm & int(board.BKCT) != 0 {
+            if brd.Pieces[board.G8] == board.EMPTY && brd.Pieces[board.F8] == board.EMPTY {
+                if !SquareAttacked(board.E8, board.WHITE, brd) && !SquareAttacked(board.F8, board.WHITE, brd) {
+                    fmt.Println("moveGen: BKCT")
+                    AddQuietMove(brd, Move(board.E8, board.G8, board.EMPTY, board.EMPTY, FLAGC), list)
+                }
+            } 
+        }
+
+        if brd.CastlePerm & int(board.BQCT) != 0 {
+            if brd.Pieces[board.D8] == board.EMPTY && brd.Pieces[board.C8] == board.EMPTY && brd.Pieces[board.B8] == board.EMPTY {
+                if !SquareAttacked(board.E8, board.WHITE, brd) && !SquareAttacked(board.D8, board.WHITE, brd) {
+                    fmt.Println("moveGen: BQCT")
+                    AddQuietMove(brd, Move(board.E8, board.C8, board.EMPTY, board.EMPTY, FLAGC), list)
+                }
+            } 
+        }
 	}
 
 	// Sliding Pieces

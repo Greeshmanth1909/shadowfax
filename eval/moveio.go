@@ -73,7 +73,7 @@ func PrintMoveList(list *S_MoveList) {
 		}
 		fmt.Printf("%v. Move: ", i+1)
 		PrintMove(&val)
-		fmt.Println("Score: ", val.Score)
+//		fmt.Println("Score: ", val.Score)
 	}
 	fmt.Println("Total move list: ", list.Count)
 }
