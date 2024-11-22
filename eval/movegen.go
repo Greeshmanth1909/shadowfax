@@ -200,6 +200,25 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 			if !board.ValidatePiece(brd.Pieces[sq]) {
 				log.Fatalf("Invalid slider piece (%v)", brd.Pieces[sq])
 			}
+			pieceDirArray := PieceDir[brd.Pieces[sq]]
+			for _, offset := range pieceDirArray {
+				if offset == 0 {
+					continue
+				}
+				toSq := sq + offset
+				for brd.Pieces[toSq] != board.Piece(board.OFFBOARD) {
+					if board.PieceCol[brd.Pieces[toSq]] == side {
+						break
+					}
+					if brd.Pieces[toSq] == board.EMPTY {
+						AddQuietMove(brd, Move(board.Square(sq), board.Square(toSq), board.EMPTY, board.EMPTY, 0), list)
+						toSq += offset
+						continue
+					}
+					AddCaptureMove(brd, Move(board.Square(sq), board.Square(toSq), brd.Pieces[toSq], board.EMPTY, 0), list)
+					break
+				}
+			}
 		}
 		startIndex++
 		piece = LoopSlidingPieces[startIndex]

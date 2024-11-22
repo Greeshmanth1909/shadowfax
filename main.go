@@ -25,7 +25,7 @@ func main() {
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 
-	startString = "5k2/1n6/4n3/2p3N1/8/3N4/8/5K2 b - - 0 1"
+	startString = "6k1/8/2q5/4Q3/8/8/8/6K1 w - - 0 1"
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 
@@ -33,5 +33,4 @@ func main() {
 	eval.GenerateAllMoves(&boardStructure, &list)
 	eval.PrintMoveList(&list)
 	// fmt.Println(boardStructure.EnP)
-	// fmt.Println(eval.ConvSq120ToAlge(boardStructure.EnP))
 }
