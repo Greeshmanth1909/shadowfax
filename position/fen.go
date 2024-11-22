@@ -20,6 +20,7 @@ func Parse_FEN(fen *string, brd *board.S_Board) error {
 	for i := range brd.Pieces {
 		brd.Pieces[i] = board.Piece(board.OFFBOARD)
 	}
+    brd.EnP = board.OFFBOARD
 
 	splitFen := strings.Split(*fen, " ")
 
