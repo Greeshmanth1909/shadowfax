@@ -28,6 +28,23 @@ var LoopSlidingPiecesIndex = [2]int{0, 4}
 var NonSlidingPieces = [6]board.Piece{board.Wn, board.Wk, board.EMPTY, board.Bn, board.Bk, board.EMPTY}
 var NonSlidingPiecesIndex = [2]int{0, 3}
 
+var PieceDir = [13][8]int{{0, 0, 0, 0, 0, 0, 0, 0},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{12, 8, 21, 19, -12, -8, -21, -19},
+	{11, 9, -11, -9, 0, 0, 0, 0},
+	{-1, -10, 1, 10, 0, 0, 0, 0},
+	{10, 1, 11, 9, -10, -1, -11, -9},
+	{10, 1, 11, 9, -10, -1, -11, -9},
+	{0, 0, 0, 0, 0, 0, 0, 0},
+	{12, 8, 21, 19, -12, -8, -21, -19},
+	{11, 9, -11, -9, 0, 0, 0, 0},
+	{-1, -10, 1, 10, 0, 0, 0, 0},
+	{10, 1, 11, 9, -10, -1, -11, -9},
+	{10, 1, 11, 9, -10, -1, -11, -9},
+}
+
+var PieceDirNum = [13]int{0, 0, 8, 4, 4, 8, 8, 0, 8, 4, 4, 8, 8}
+
 func AddQuietMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
 	list.MoveList[list.Count].Score = 0
@@ -199,6 +216,22 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 			fmt.Printf("non slide pieceInd: %v, piece: %v\n", sq, piece)
 			if !board.ValidatePiece(brd.Pieces[sq]) {
 				log.Fatalf("Invalid slider piece (%v)", brd.Pieces[sq])
+			}
+
+			pieceDirArray := PieceDir[brd.Pieces[sq]]
+			for _, offset := range pieceDirArray {
+				toSq := sq + offset
+				if brd.Pieces[toSq] == board.Piece(board.OFFBOARD) {
+					continue
+				}
+				if board.PieceCol[brd.Pieces[toSq]] == side {
+					continue
+				}
+				if brd.Pieces[toSq] == board.EMPTY {
+					AddQuietMove(brd, Move(board.Square(sq), board.Square(toSq), board.EMPTY, board.EMPTY, 0), list)
+					continue
+				}
+				AddCaptureMove(brd, Move(board.Square(sq), board.Square(toSq), brd.Pieces[toSq], board.EMPTY, 0), list)
 			}
 		}
 		startIndex++
