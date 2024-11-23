@@ -19,9 +19,9 @@ func ResetBoard(brd *board.S_Board) {
 		brd.MajPiece[i] = 0
 		brd.Material[i] = 0
 	}
-    for i := range brd.Pawns {
-        brd.Pawns[i] = uint64(0)
-    }
+	for i := range brd.Pawns {
+		brd.Pawns[i] = uint64(0)
+	}
 
 	brd.Side = board.BOTH
 	brd.EnP = board.NO_SQ
