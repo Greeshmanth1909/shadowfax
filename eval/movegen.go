@@ -291,3 +291,44 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 		piece = NonSlidingPieces[startIndex]
 	}
 }
+
+func MakeMove(brd board.S_Board, mv S_Move) {
+	frm, to, capt, pro, flag := getMove(mv)
+	side := brd.Side
+	piece := brd.Pieces[frm]
+	pieceAtTo := brd.Pieces[to]
+	if piece == board.EMPTY || piece == board.OFFBOARD {
+		log.Fatalf("trying to move empty piece frm (%v)", frm)
+	}
+	if pieceAtTo == board.EMPTY || pieceAtTo == board.OFFBOARD {
+		log.Fatalf("Invalid to Sq %v", to)
+	}
+	if board.PieceCol[piece] != side {
+		log.Fatalf("Invalid Piece movement")
+	}
+
+	// Remove piece from frm square and place it at to square
+	brd.Pieces[frm] = board.EMPTY
+	brd.Pieces[to] = piece
+
+	// Check for capture
+	if capt != 0 {
+		if pieceAtTo != capt {
+			log.Fatalf("Invalid Capture")
+		}
+		// Update piece list, this might cause problems
+		for i, sq := range brd.PList[pieceAtTo] {
+			if sq == to {
+				brd.PList[pieceAtTo][i] = int(board.EMPTY)
+				brd.PieceNum[pieceAtTo]--
+				if board.BigPiece[pieceAtTo] {
+					brd.MajPiece[side^1]--
+				} else {
+					brd.MinPiece[side^1]--
+				}
+				break
+			}
+		}
+
+	}
+}

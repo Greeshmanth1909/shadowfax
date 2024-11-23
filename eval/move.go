@@ -106,3 +106,19 @@ func Move(frm, to board.Square, capt, pro board.Piece, f1 uint32) uint32 {
 	}
 	return mv.Move
 }
+
+func getMove(mv *S_Move) (frm, to board.Square, capt, pro board.Piece, flag uint32) {
+	frm = GetFromSquare(mv)
+	to = GetToSquare(mv)
+	capt = GetCapturedPiece(mv)
+	pro = GetPromotedPiece(mv)
+	flag = uint32(0)
+	if GetEnP(mv) {
+		flag = FLAGENP
+	} else if GetPawnStart(mv) {
+		flag = FLAGPS
+	} else if GetCastleFlag(mv) {
+		flag = FLAGC
+	}
+	return frm, to, capt, pro, flag
+}
