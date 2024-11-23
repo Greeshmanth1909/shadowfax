@@ -292,15 +292,15 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 	}
 }
 
-func MakeMove(brd board.S_Board, mv S_Move) {
+func MakeMove(brd *board.S_Board, mv *S_Move) {
 	frm, to, capt, pro, flag := getMove(mv)
 	side := brd.Side
 	piece := brd.Pieces[frm]
 	pieceAtTo := brd.Pieces[to]
-	if piece == board.EMPTY || piece == board.OFFBOARD {
+	if piece == board.EMPTY || piece == board.Piece(board.OFFBOARD) {
 		log.Fatalf("trying to move empty piece frm (%v)", frm)
 	}
-	if pieceAtTo == board.EMPTY || pieceAtTo == board.OFFBOARD {
+	if pieceAtTo == board.Piece(board.OFFBOARD) {
 		log.Fatalf("Invalid to Sq %v", to)
 	}
 	if board.PieceCol[piece] != side {
@@ -318,17 +318,35 @@ func MakeMove(brd board.S_Board, mv S_Move) {
 		}
 		// Update piece list, this might cause problems
 		for i, sq := range brd.PList[pieceAtTo] {
-			if sq == to {
+			if sq == int(to) {
 				brd.PList[pieceAtTo][i] = int(board.EMPTY)
 				brd.PieceNum[pieceAtTo]--
 				if board.BigPiece[pieceAtTo] {
 					brd.MajPiece[side^1]--
-				} else {
+				} else if board.MinPiece[pieceAtTo] {
 					brd.MinPiece[side^1]--
 				}
+				brd.Material[side] += board.PieceVal[pieceAtTo]
 				break
 			}
 		}
+	}
 
+	// Promotion, if any
+	if pro != 0 {
+		brd.Pieces[to] = pro
+		for i, val := range brd.PList[piece] {
+			if val == int(frm) {
+				brd.PList[piece][i] = int(board.EMPTY)
+			}
+		}
+		brd.Material[side] -= board.PieceVal[piece]
+		brd.Material[side] += board.PieceVal[pro]
+		brd.PieceNum[pro]++
+		brd.PList[pro][brd.PieceNum[pro]] = int(to)
+	}
+
+	if flag == 0 {
+		fmt.Println("heh")
 	}
 }
