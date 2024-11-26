@@ -18,6 +18,21 @@ const FLAGC = uint32(1) << 24
 
 const MAXPOSITIONMOVES = 256
 
+var CastlePerm = [120]int{
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 13, 15, 15, 15, 12, 15, 15, 14, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 7, 15, 15, 15, 3, 15, 15, 11, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
+}
+
 type S_MoveList struct {
 	MoveList [MAXPOSITIONMOVES]S_Move
 	Count    int
@@ -306,6 +321,9 @@ func MakeMove(brd *board.S_Board, mv *S_Move) {
 	if board.PieceCol[piece] != side {
 		log.Fatalf("Invalid Piece movement")
 	}
+
+	// update CastlePerm
+	frm = board.Square(int(frm) & CastlePerm[frm])
 
 	// Remove piece from frm square and place it at to square
 	brd.Pieces[frm] = board.EMPTY
