@@ -456,6 +456,7 @@ func MovePiece(from, to board.Square, brd *board.S_Board) {
 		if val == int(from) {
 			brd.PList[piece][i] = int(to)
 			flag = true
+            break
 		}
 	}
 	if !flag {
