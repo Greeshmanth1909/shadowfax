@@ -312,15 +312,6 @@ func MakeMove(brd *board.S_Board, mv *S_Move) {
 	side := brd.Side
 	piece := brd.Pieces[frm]
 	pieceAtTo := brd.Pieces[to]
-	if piece == board.EMPTY || piece == board.Piece(board.OFFBOARD) {
-		log.Fatalf("trying to move empty piece frm (%v)", frm)
-	}
-	if pieceAtTo == board.Piece(board.OFFBOARD) {
-		log.Fatalf("Invalid to Sq %v", to)
-	}
-	if board.PieceCol[piece] != side {
-		log.Fatalf("Invalid Piece movement")
-	}
 
 	// update CastlePerm
 	frm = board.Square(int(frm) & CastlePerm[frm])
@@ -367,4 +358,44 @@ func MakeMove(brd *board.S_Board, mv *S_Move) {
 	if flag == 0 {
 		fmt.Println("heh")
 	}
+}
+
+func ClearPiece(sq board.Square, brd *board.S_Board) {
+	piece := brd.Pieces[sq]
+	if piece == board.EMPTY || piece == board.Piece(board.OFFBOARD) {
+		log.Fatalf("trying to move empty piece frm (%v)", sq)
+	}
+	col := board.PieceCol[piece]
+	//index := 0
+	t_pieceNum := -1
+	brd.PosKey ^= board.PieceKeys[piece][sq]
+
+	brd.Pieces[sq] = board.EMPTY
+	brd.Material[col] -= board.PieceVal[piece]
+
+	if board.BigPiece[piece] {
+		brd.BigPiece[col]--
+		if board.MajPiece[piece] {
+			brd.MajPiece[col]--
+		} else {
+			brd.MinPiece[col]--
+		}
+	} else {
+		board.ClearBit(board.Square120to64[sq], &brd.Pawns[col])
+		board.ClearBit(board.Square120to64[sq], &brd.Pawns[board.BOTH])
+	}
+
+	// Clear piece from PList
+	for i, val := range brd.PList[piece] {
+		if val == int(sq) {
+			t_pieceNum = i
+			break
+		}
+	}
+	if t_pieceNum == -1 {
+		log.Fatalf("t_piecenum is -1 (%v)", t_pieceNum)
+	}
+
+	brd.PieceNum[piece]--
+	brd.PList[piece][t_pieceNum] = brd.PList[piece][brd.PieceNum[piece]]
 }
