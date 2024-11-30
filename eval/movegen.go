@@ -399,3 +399,33 @@ func ClearPiece(sq board.Square, brd *board.S_Board) {
 	brd.PieceNum[piece]--
 	brd.PList[piece][t_pieceNum] = brd.PList[piece][brd.PieceNum[piece]]
 }
+
+func AddPiece(sq board.Square, brd *board.S_Board, pc board.Piece) {
+	piece := brd.Pieces[sq]
+	col := board.PieceCol[pc]
+
+	if piece == board.Piece(board.OFFBOARD) {
+		log.Fatalf("Invalid to square (%v)", piece)
+	}
+	if piece != board.EMPTY {
+		log.Fatalf("Square not empty (%v)", piece)
+	}
+
+	brd.PosKey ^= board.PieceKeys[piece][sq]
+
+	if board.BigPiece[piece] {
+		brd.BigPiece[col]++
+		if board.MajPiece[piece] {
+			brd.MajPiece[col]++
+		} else {
+			brd.MinPiece[col]++
+		}
+	} else {
+		board.SetBit(board.Square120to64[sq], &brd.Pawns[col])
+		board.SetBit(board.Square120to64[sq], &brd.Pawns[board.BOTH])
+	}
+
+	brd.Material[col] += board.PieceVal[piece]
+	brd.PList[pc][brd.PieceNum[pc]] = int(sq)
+	brd.PieceNum[pc]++
+}
