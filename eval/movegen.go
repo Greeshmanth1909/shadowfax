@@ -429,3 +429,36 @@ func AddPiece(sq board.Square, brd *board.S_Board, pc board.Piece) {
 	brd.PList[pc][brd.PieceNum[pc]] = int(sq)
 	brd.PieceNum[pc]++
 }
+
+func MovePiece(from, to board.Square, brd *board.S_Board) {
+	if brd.Pieces[from] == board.Piece(board.OFFBOARD) || brd.Pieces[to] == board.Piece(board.OFFBOARD) {
+		log.Fatalf("MovePiece: invalid from/to square (from: %v) (to: %v)", brd.Pieces[from], brd.Pieces[to])
+	}
+	piece := brd.Pieces[from]
+	col := board.PieceCol[piece]
+
+	brd.PosKey ^= board.PieceKeys[piece][from]
+	brd.Pieces[from] = board.EMPTY
+
+	brd.PosKey ^= board.PieceKeys[piece][to]
+	brd.Pieces[to] = piece
+
+	flag := false
+
+	if !board.BigPiece[piece] {
+		board.ClearBit(board.Square120to64[from], &brd.Pawns[col])
+		board.ClearBit(board.Square120to64[from], &brd.Pawns[board.BOTH])
+		board.SetBit(board.Square120to64[to], &brd.Pawns[col])
+		board.SetBit(board.Square120to64[to], &brd.Pawns[board.BOTH])
+	}
+
+	for i, val := range brd.PList[piece] {
+		if val == int(from) {
+			brd.PList[piece][i] = int(to)
+			flag = true
+		}
+	}
+	if !flag {
+		log.Fatalf("MovePiece: Piece not found in PList")
+	}
+}
