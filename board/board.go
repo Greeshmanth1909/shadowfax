@@ -197,9 +197,9 @@ type S_Board struct {
 }
 
 type S_Undo struct {
-	Move       int
+	Move       uint32
 	CastlePerm int
-	EnP        int
+	EnP        Square
 	FiftyMove  int
 	PosKey     uint64
 }

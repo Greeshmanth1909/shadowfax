@@ -307,59 +307,6 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 	}
 }
 
-func MakeMove(brd *board.S_Board, mv *S_Move) {
-	frm, to, capt, pro, flag := getMove(mv)
-	side := brd.Side
-	piece := brd.Pieces[frm]
-	pieceAtTo := brd.Pieces[to]
-
-	// update CastlePerm
-	frm = board.Square(int(frm) & CastlePerm[frm])
-
-	// Remove piece from frm square and place it at to square
-	brd.Pieces[frm] = board.EMPTY
-	brd.Pieces[to] = piece
-
-	// Check for capture
-	if capt != 0 {
-		if pieceAtTo != capt {
-			log.Fatalf("Invalid Capture")
-		}
-		// Update piece list, this might cause problems
-		for i, sq := range brd.PList[pieceAtTo] {
-			if sq == int(to) {
-				brd.PList[pieceAtTo][i] = int(board.EMPTY)
-				brd.PieceNum[pieceAtTo]--
-				if board.BigPiece[pieceAtTo] {
-					brd.MajPiece[side^1]--
-				} else if board.MinPiece[pieceAtTo] {
-					brd.MinPiece[side^1]--
-				}
-				brd.Material[side] += board.PieceVal[pieceAtTo]
-				break
-			}
-		}
-	}
-
-	// Promotion, if any
-	if pro != 0 {
-		brd.Pieces[to] = pro
-		for i, val := range brd.PList[piece] {
-			if val == int(frm) {
-				brd.PList[piece][i] = int(board.EMPTY)
-			}
-		}
-		brd.Material[side] -= board.PieceVal[piece]
-		brd.Material[side] += board.PieceVal[pro]
-		brd.PieceNum[pro]++
-		brd.PList[pro][brd.PieceNum[pro]] = int(to)
-	}
-
-	if flag == 0 {
-		fmt.Println("heh")
-	}
-}
-
 func ClearPiece(sq board.Square, brd *board.S_Board) {
 	piece := brd.Pieces[sq]
 	if piece == board.EMPTY || piece == board.Piece(board.OFFBOARD) {
@@ -456,10 +403,117 @@ func MovePiece(from, to board.Square, brd *board.S_Board) {
 		if val == int(from) {
 			brd.PList[piece][i] = int(to)
 			flag = true
-            break
+			break
 		}
 	}
 	if !flag {
 		log.Fatalf("MovePiece: Piece not found in PList")
 	}
+}
+
+func MakeMove(brd *board.S_Board, mv *S_Move) bool {
+	from, to, capt, pro, flag := getMove(mv)
+
+	if brd.Pieces[from] == board.EMPTY || brd.Pieces[from] == board.Piece(board.OFFBOARD) {
+		log.Fatalf("MakeMove: invalid from square")
+	}
+	if brd.Pieces[to] == board.Piece(board.OFFBOARD) {
+		log.Fatalf("MakeMove: invalid to square")
+	}
+
+	side := brd.Side
+	brd.History[brd.HisPly].PosKey = brd.PosKey
+
+	if flag == FLAGENP {
+		if side == board.WHITE {
+			ClearPiece(to-board.Square(10), brd)
+		}
+	} else {
+		ClearPiece(to+board.Square(10), brd)
+	}
+
+	if flag == FLAGC {
+		switch to {
+		case board.C1:
+			MovePiece(board.E1, board.C1, brd)
+		case board.C8:
+			MovePiece(board.E8, board.C8, brd)
+		case board.G1:
+			MovePiece(board.E1, board.G1, brd)
+		case board.G8:
+			MovePiece(board.E8, board.G8, brd)
+		default:
+			log.Fatalf("Invalid to square in castling (%v)", to)
+		}
+	}
+
+	if brd.EnP != board.NO_SQ {
+		brd.PosKey ^= board.PieceKeys[board.EMPTY][brd.EnP]
+	}
+	brd.PosKey ^= board.CastleKeys[brd.CastlePerm]
+
+	brd.History[brd.HisPly].Move = mv.Move
+	brd.History[brd.HisPly].CastlePerm = brd.CastlePerm
+	brd.History[brd.HisPly].EnP = brd.EnP
+	brd.History[brd.HisPly].FiftyMove = brd.FiftyMove
+
+	brd.CastlePerm &= CastlePerm[from]
+	brd.CastlePerm &= CastlePerm[to]
+	brd.EnP = board.NO_SQ
+
+	brd.PosKey ^= board.CastleKeys[brd.CastlePerm]
+	brd.FiftyMove++
+
+	if capt != board.EMPTY {
+		if capt == board.Piece(board.OFFBOARD) {
+			log.Fatalf("MakeMove: Invalid capture piece")
+		}
+		ClearPiece(to, brd)
+		brd.FiftyMove = 0
+	}
+	brd.Ply++
+	brd.HisPly++
+
+	if board.PiecePawn[brd.Pieces[from]] {
+		brd.FiftyMove = 0
+		if flag == FLAGPS {
+			if side == board.WHITE {
+				brd.EnP = from + board.Square(10)
+				if board.RankArr[brd.EnP] != board.RANK_3 {
+					log.Fatalf("Invalid enp rank")
+				}
+			} else {
+				brd.EnP = from - board.Square(10)
+				if board.RankArr[brd.EnP] != board.RANK_6 {
+					log.Fatalf("Invalid enp rank")
+				}
+			}
+			brd.PosKey ^= board.PieceKeys[board.EMPTY][brd.EnP]
+		}
+	}
+
+	MovePiece(from, to, brd)
+
+	if pro != board.EMPTY {
+		if pro == board.Piece(board.OFFBOARD) || board.PiecePawn[pro] {
+			log.Fatalf("Invalid promotion")
+		}
+		ClearPiece(to, brd)
+		AddPiece(to, brd, pro)
+	}
+
+	brd.Side ^= 1
+	brd.PosKey ^= board.SideKey
+	board.CheckBoard(brd)
+
+	if SquareAttacked(board.Square(brd.KingSquare[side]), brd.Side, brd) {
+		TakeMove(brd)
+		return false
+	}
+	return true
+}
+
+func TakeMove(brd *board.S_Board) {
+
+	return
 }
