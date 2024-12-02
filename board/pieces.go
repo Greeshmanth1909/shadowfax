@@ -20,6 +20,7 @@ var PieceCol = [13]Color{BOTH, WHITE, WHITE, WHITE, WHITE, WHITE, WHITE, BLACK, 
 var PieceSlides = [13]bool{false, false, false, true, true, true, false, false, false, true, true, true, false}
 
 var PiecePawn = [13]bool{false, true, false, false, false, false, false, true, false, false, false, false, false}
+var PieceKing = [13]bool{false, false, false, false, false, false, true, false, false, false, false, false, true}
 
 // UpdatePieceList iterates over the entire board and adds updates the existing pieces to the board struct accordingly
 func UpdatePieceList(brd *S_Board) {

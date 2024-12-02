@@ -315,7 +315,7 @@ func ClearPiece(sq board.Square, brd *board.S_Board) {
 	col := board.PieceCol[piece]
 	//index := 0
 	t_pieceNum := -1
-	brd.PosKey ^= board.PieceKeys[piece][sq]
+    hashPiece(brd, piece, sq)
 
 	brd.Pieces[sq] = board.EMPTY
 	brd.Material[col] -= board.PieceVal[piece]
@@ -358,7 +358,7 @@ func AddPiece(sq board.Square, brd *board.S_Board, pc board.Piece) {
 		log.Fatalf("Square not empty (%v)", piece)
 	}
 
-	brd.PosKey ^= board.PieceKeys[piece][sq]
+    hashPiece(brd, piece, sq)
 
 	if board.BigPiece[piece] {
 		brd.BigPiece[col]++
@@ -384,10 +384,10 @@ func MovePiece(from, to board.Square, brd *board.S_Board) {
 	piece := brd.Pieces[from]
 	col := board.PieceCol[piece]
 
-	brd.PosKey ^= board.PieceKeys[piece][from]
+    hashPiece(brd, piece, from)
 	brd.Pieces[from] = board.EMPTY
 
-	brd.PosKey ^= board.PieceKeys[piece][to]
+    hashPiece(brd, piece, to)
 	brd.Pieces[to] = piece
 
 	flag := false
@@ -436,21 +436,25 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 		switch to {
 		case board.C1:
 			MovePiece(board.E1, board.C1, brd)
+			MovePiece(board.A1, board.D1, brd)
 		case board.C8:
 			MovePiece(board.E8, board.C8, brd)
+			MovePiece(board.A8, board.D8, brd)
 		case board.G1:
 			MovePiece(board.E1, board.G1, brd)
+			MovePiece(board.H1, board.F1, brd)
 		case board.G8:
 			MovePiece(board.E8, board.G8, brd)
+			MovePiece(board.H8, board.F8, brd)
 		default:
 			log.Fatalf("Invalid to square in castling (%v)", to)
 		}
 	}
 
 	if brd.EnP != board.NO_SQ {
-		brd.PosKey ^= board.PieceKeys[board.EMPTY][brd.EnP]
+        hashEnP(brd)
 	}
-	brd.PosKey ^= board.CastleKeys[brd.CastlePerm]
+    hashC(brd)
 
 	brd.History[brd.HisPly].Move = mv.Move
 	brd.History[brd.HisPly].CastlePerm = brd.CastlePerm
@@ -461,7 +465,7 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 	brd.CastlePerm &= CastlePerm[to]
 	brd.EnP = board.NO_SQ
 
-	brd.PosKey ^= board.CastleKeys[brd.CastlePerm]
+    hashC(brd)
 	brd.FiftyMove++
 
 	if capt != board.EMPTY {
@@ -488,7 +492,7 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 					log.Fatalf("Invalid enp rank")
 				}
 			}
-			brd.PosKey ^= board.PieceKeys[board.EMPTY][brd.EnP]
+            hashEnP(brd)
 		}
 	}
 
@@ -503,8 +507,12 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 	}
 
 	brd.Side ^= 1
-	brd.PosKey ^= board.SideKey
+    hashSide(brd)
 	board.CheckBoard(brd)
+
+    if board.PieceKing[brd.Pieces[to]] {
+        brd.KingSquare = int(to)
+    }
 
 	if SquareAttacked(board.Square(brd.KingSquare[side]), brd.Side, brd) {
 		TakeMove(brd)
@@ -514,6 +522,60 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 }
 
 func TakeMove(brd *board.S_Board) {
+    board.CheckBoard(brd)
+    var mv S_Move
+    brd.HisPly--
+    brd.Ply--
+
+    mv.Move = brd.History[brd.HisPly]
+
+    from, to, capt, pro, flag := getMove(&mv)
+    
+    brd.Side ^= 1
+    side := brd.Side
+    
+	if flag == FLAGENP {
+		if side == board.WHITE {
+			AddPiece(to-board.Square(10), brd, capt)
+		}
+	} else {
+		AddPiece(to+board.Square(10), brd, capt)
+	}
+
+	if flag == FLAGC {
+		switch to {
+		case board.C1:
+			MovePiece(board.E1, board.C1, brd)
+			MovePiece(board.A1, board.D1, brd)
+		case board.C8:
+			MovePiece(board.E8, board.C8, brd)
+			MovePiece(board.A8, board.D8, brd)
+		case board.G1:
+			MovePiece(board.E1, board.G1, brd)
+			MovePiece(board.H1, board.F1, brd)
+		case board.G8:
+			MovePiece(board.E8, board.G8, brd)
+			MovePiece(board.H8, board.F8, brd)
+		default:
+			log.Fatalf("Invalid to square in castling (%v)", to)
+		}
+	}
 
 	return
+}
+
+func hashEnP(brd *board.S_Board) {
+    brd.PosKey ^= board.PieceKeys[board.EMPTY][brd.EnP]
+}
+
+func hashPiece(brd *board.S_Board, piece board.Piece, square board.Square) {
+    brd.PosKey ^= board.PieceKeys[piece][square]
+}
+
+func hashC(brd *board.S_Board) {
+    brd.PosKey ^= board.CastleKeys[brd.CastlePerm]
+}
+
+func hashSide(brd *board.S_Board) {
+    brd.PosKey ^= board.SideKey
 }
