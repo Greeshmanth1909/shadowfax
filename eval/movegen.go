@@ -431,20 +431,19 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 			ClearPiece(to+board.Square(10), brd)
 		}
 	}
+	/* Im assuming castling will be represented with king move and castle flag. That is the case so make
+	   move will move the king later on so the rook needs to move now
+	*/
 
 	if flag == FLAGC {
 		switch to {
 		case board.C1:
-			MovePiece(board.E1, board.C1, brd)
 			MovePiece(board.A1, board.D1, brd)
 		case board.C8:
-			MovePiece(board.E8, board.C8, brd)
 			MovePiece(board.A8, board.D8, brd)
 		case board.G1:
-			MovePiece(board.E1, board.G1, brd)
 			MovePiece(board.H1, board.F1, brd)
 		case board.G8:
-			MovePiece(board.E8, board.G8, brd)
 			MovePiece(board.H8, board.F8, brd)
 		default:
 			log.Fatalf("Invalid to square in castling (%v)", to)
@@ -532,29 +531,26 @@ func TakeMove(brd *board.S_Board) {
 	from, to, capt, pro, flag := getMove(&mv)
 
 	brd.Side ^= 1
+	hashSide(brd)
 	side := brd.Side
 
 	if flag == FLAGENP {
 		if side == board.WHITE {
-			AddPiece(to-board.Square(10), brd, capt)
+			AddPiece(to-board.Square(10), brd, board.Bp)
 		} else {
-			AddPiece(to+board.Square(10), brd, capt)
+			AddPiece(to+board.Square(10), brd, board.Wp)
 		}
 	}
 
 	if flag == FLAGC {
 		switch to {
 		case board.C1:
-			MovePiece(board.C1, board.A1, brd)
 			MovePiece(board.D1, board.A1, brd)
 		case board.C8:
-			MovePiece(board.C8, board.E8, brd)
 			MovePiece(board.D8, board.A8, brd)
 		case board.G1:
-			MovePiece(board.G1, board.A1, brd)
 			MovePiece(board.F1, board.H1, brd)
 		case board.G8:
-			MovePiece(board.G8, board.E8, brd)
 			MovePiece(board.F8, board.H8, brd)
 		default:
 			log.Fatalf("Invalid to square in castling (%v)", to)
@@ -563,12 +559,19 @@ func TakeMove(brd *board.S_Board) {
 
 	// Remove existing castling perms and re-calculate them
 	hashC(brd)
+	if brd.EnP != board.NO_SQ {
+		hashEnP(brd)
+	}
 	brd.CastlePerm = brd.History[brd.HisPly].CastlePerm
 	brd.EnP = brd.History[brd.HisPly].EnP
 	brd.FiftyMove = brd.History[brd.HisPly].FiftyMove
 
 	hashC(brd)
-	hashEnP(brd)
+	if brd.EnP != board.NO_SQ {
+		hashEnP(brd)
+	}
+
+	MovePiece(to, from, brd)
 
 	if capt != board.EMPTY {
 		if capt == board.Piece(board.OFFBOARD) {
@@ -577,27 +580,21 @@ func TakeMove(brd *board.S_Board) {
 		AddPiece(to, brd, capt)
 	}
 
-	MovePiece(to, from, brd)
-
 	if pro != board.EMPTY {
 		if pro == board.Piece(board.OFFBOARD) || board.PiecePawn[pro] {
 			log.Fatalf("Invalid promotion")
 		}
+		ClearPiece(from, brd)
 		if side == board.WHITE {
 			AddPiece(from, brd, board.Wp)
 		} else {
 			AddPiece(from, brd, board.Bp)
 		}
-		ClearPiece(to, brd)
 	}
-
-	brd.Side ^= 1
-	hashSide(brd)
-	board.CheckBoard(brd)
-
 	if board.PieceKing[brd.Pieces[to]] {
 		brd.KingSquare[side] = int(to)
 	}
+	board.CheckBoard(brd)
 }
 
 func hashEnP(brd *board.S_Board) {
