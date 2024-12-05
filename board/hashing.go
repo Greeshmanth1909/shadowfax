@@ -27,7 +27,7 @@ func InitHashKeys() {
 func GenerateHash(pos *S_Board) uint64 {
 	var finalKey uint64 = 0
 	for i, piece := range pos.Pieces {
-		if piece != Piece(NO_SQ) && piece != Piece(EMPTY) && piece != Piece(OFFBOARD){
+		if piece != Piece(NO_SQ) && piece != Piece(EMPTY) && piece != Piece(OFFBOARD) {
 			finalKey ^= PieceKeys[piece][i]
 		}
 	}

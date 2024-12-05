@@ -453,8 +453,8 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 	if brd.EnP != board.NO_SQ {
 		hashEnP(brd)
 	}
-	hashC(brd)
 
+	hashC(brd)
 	brd.History[brd.HisPly].Move = mv.Move
 	brd.History[brd.HisPly].CastlePerm = brd.CastlePerm
 	brd.History[brd.HisPly].EnP = brd.EnP
