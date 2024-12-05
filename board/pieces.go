@@ -91,7 +91,7 @@ func CheckBoard(brd *S_Board) {
 			sq := brd.PList[piece][pieceIndex]
 			// check weather the piece exists on the board
 			if brd.Pieces[sq] != piece {
-				log.Fatalf("CheckBoard: Invalid Piece Placement")
+				log.Fatalf("CheckBoard: Invalid Piece Placement (%v!=%v)", brd.Pieces[sq], piece)
 			}
 		}
 	}

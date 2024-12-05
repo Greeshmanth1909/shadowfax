@@ -221,7 +221,6 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 		if brd.CastlePerm&int(board.BKCT) != 0 {
 			if brd.Pieces[board.G8] == board.EMPTY && brd.Pieces[board.F8] == board.EMPTY {
 				if !SquareAttacked(board.E8, board.WHITE, brd) && !SquareAttacked(board.F8, board.WHITE, brd) {
-					fmt.Println("moveGen: BKCT")
 					AddQuietMove(brd, Move(board.E8, board.G8, board.EMPTY, board.EMPTY, FLAGC), list)
 				}
 			}
@@ -230,7 +229,6 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 		if brd.CastlePerm&int(board.BQCT) != 0 {
 			if brd.Pieces[board.D8] == board.EMPTY && brd.Pieces[board.C8] == board.EMPTY && brd.Pieces[board.B8] == board.EMPTY {
 				if !SquareAttacked(board.E8, board.WHITE, brd) && !SquareAttacked(board.D8, board.WHITE, brd) {
-					fmt.Println("moveGen: BQCT")
 					AddQuietMove(brd, Move(board.E8, board.C8, board.EMPTY, board.EMPTY, FLAGC), list)
 				}
 			}
@@ -245,7 +243,6 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 			if sq == 0 {
 				break
 			}
-			fmt.Printf("slider pieceInd: %v, piece: %v\n", sq, piece)
 			if !board.ValidatePiece(brd.Pieces[sq]) {
 				log.Fatalf("Invalid slider piece (%v)", brd.Pieces[sq])
 			}
@@ -281,7 +278,6 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 			if sq == 0 {
 				break
 			}
-			fmt.Printf("non slide pieceInd: %v, piece: %v\n", sq, piece)
 			if !board.ValidatePiece(brd.Pieces[sq]) {
 				log.Fatalf("Invalid slider piece (%v)", brd.Pieces[sq])
 			}
@@ -358,11 +354,11 @@ func AddPiece(sq board.Square, brd *board.S_Board, pc board.Piece) {
 		log.Fatalf("Square not empty (%v)", piece)
 	}
 
-	hashPiece(brd, piece, sq)
+	hashPiece(brd, pc, sq)
 
-	if board.BigPiece[piece] {
+	if board.BigPiece[pc] {
 		brd.BigPiece[col]++
-		if board.MajPiece[piece] {
+		if board.MajPiece[pc] {
 			brd.MajPiece[col]++
 		} else {
 			brd.MinPiece[col]++
@@ -372,9 +368,10 @@ func AddPiece(sq board.Square, brd *board.S_Board, pc board.Piece) {
 		board.SetBit(board.Square120to64[sq], &brd.Pawns[board.BOTH])
 	}
 
-	brd.Material[col] += board.PieceVal[piece]
+	brd.Material[col] += board.PieceVal[pc]
 	brd.PList[pc][brd.PieceNum[pc]] = int(sq)
 	brd.PieceNum[pc]++
+	brd.Pieces[sq] = pc
 }
 
 func MovePiece(from, to board.Square, brd *board.S_Board) {
@@ -507,11 +504,12 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 
 	brd.Side ^= 1
 	hashSide(brd)
-	board.CheckBoard(brd)
 
 	if board.PieceKing[brd.Pieces[to]] {
 		brd.KingSquare[side] = int(to)
 	}
+	fmt.Println("make move cb1")
+	board.CheckBoard(brd)
 
 	if SquareAttacked(board.Square(brd.KingSquare[side]), brd.Side, brd) {
 		TakeMove(brd)
@@ -521,6 +519,7 @@ func MakeMove(brd *board.S_Board, mv *S_Move) bool {
 }
 
 func TakeMove(brd *board.S_Board) {
+	fmt.Println("take move cb1")
 	board.CheckBoard(brd)
 	var mv S_Move
 	brd.HisPly--
@@ -591,9 +590,10 @@ func TakeMove(brd *board.S_Board) {
 			AddPiece(from, brd, board.Bp)
 		}
 	}
-	if board.PieceKing[brd.Pieces[to]] {
-		brd.KingSquare[side] = int(to)
+	if board.PieceKing[brd.Pieces[from]] {
+		brd.KingSquare[side] = int(from)
 	}
+	fmt.Println("take move cb2")
 	board.CheckBoard(brd)
 }
 

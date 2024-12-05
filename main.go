@@ -1,21 +1,22 @@
 package main
 
 import (
-	"bufio"
+	// "bufio"
 	"fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"github.com/Greeshmanth1909/shadowfax/eval"
 	"github.com/Greeshmanth1909/shadowfax/position"
 	"github.com/Greeshmanth1909/shadowfax/util"
-	"os"
+	// "os"
 )
 
 func main() {
 	util.InitAll()
 	fmt.Printf("%v\nStatus: running\n", board.Name)
-	reader := bufio.NewReader(os.Stdin)
+	// reader := bufio.NewReader(os.Stdin)
 
 	startString := position.StartPosition
+	startString = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 	var boardStructure board.S_Board
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
@@ -26,16 +27,19 @@ func main() {
 
 	fmt.Println(boardStructure.EnP)
 
-	for i := 0; i < list.Count; i++ {
-		mv := list.MoveList[i]
-		eval.MakeMove(&boardStructure, &mv)
-		position.PrintBoard(&boardStructure)
-		text, _ := reader.ReadString('\n')
-		fmt.Println(text)
-		fmt.Println("Taking move")
-		eval.TakeMove(&boardStructure)
-		position.PrintBoard(&boardStructure)
-		newT, _ := reader.ReadString('\n')
-		fmt.Println(newT)
-	}
+	// for i := 0; i < list.Count; i++ {
+	// 	mv := list.MoveList[i]
+	// 	eval.MakeMove(&boardStructure, &mv)
+	// 	position.PrintBoard(&boardStructure)
+	// 	text, _ := reader.ReadString('\n')
+	// 	fmt.Println(text)
+	// 	fmt.Println("Taking move")
+	// 	eval.TakeMove(&boardStructure)
+	// 	position.PrintBoard(&boardStructure)
+	// 	newT, _ := reader.ReadString('\n')
+	// 	fmt.Println(newT)
+	// }
+
+	num := eval.PerftTest(3, &boardStructure)
+	fmt.Println(num)
 }
