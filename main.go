@@ -23,9 +23,9 @@ func main() {
 
 	var list eval.S_MoveList
 	eval.GenerateAllMoves(&boardStructure, &list)
-	eval.PrintMoveList(&list)
+	// eval.PrintMoveList(&list)
 
-	fmt.Println(boardStructure.EnP)
+	// fmt.Println(boardStructure.EnP)
 
 	// for i := 0; i < list.Count; i++ {
 	// 	mv := list.MoveList[i]
@@ -40,6 +40,6 @@ func main() {
 	// 	fmt.Println(newT)
 	// }
 
-	num := eval.PerftTest(3, &boardStructure)
+	num := eval.PerftTest(4, &boardStructure)
 	fmt.Println(num)
 }
