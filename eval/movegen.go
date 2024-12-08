@@ -147,8 +147,8 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 	side := brd.Side
 
 	if side == board.WHITE {
-        for pnum := 0; pnum < brd.PieceNum[board.Wp]; pnum++ {
-            sq := brd.PList[board.Wp][pnum]
+		for pnum := 0; pnum < brd.PieceNum[board.Wp]; pnum++ {
+			sq := brd.PList[board.Wp][pnum]
 			if brd.Pieces[sq+9] != board.Piece(board.OFFBOARD) {
 				if board.PieceCol[brd.Pieces[sq+9]] == board.BLACK {
 					addWhitePawnCapMove(brd, board.Square(sq), board.Square(sq+9), brd.Pieces[sq+9], list)
@@ -165,14 +165,14 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 			if board.RankArr[sq] == board.RANK_2 && brd.Pieces[sq+10] == board.EMPTY && brd.Pieces[sq+20] == board.EMPTY {
 				addQuietMove(brd, Move(board.Square(sq), board.Square(sq+20), board.EMPTY, board.EMPTY, FLAGPS), list)
 			}
-            if brd.EnP != board.NO_SQ {
-                if board.Square(sq+11) == (brd.EnP) {
-                    addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq+11), board.EMPTY, board.EMPTY, FLAGENP), list)
-                }
-                if board.Square(sq+9) == (brd.EnP) {
-                    addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq+9), board.EMPTY, board.EMPTY, FLAGENP), list)
-                }
-            }
+			if brd.EnP != board.NO_SQ {
+				if board.Square(sq+11) == (brd.EnP) {
+					addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq+11), board.EMPTY, board.EMPTY, FLAGENP), list)
+				}
+				if board.Square(sq+9) == (brd.EnP) {
+					addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq+9), board.EMPTY, board.EMPTY, FLAGENP), list)
+				}
+			}
 		}
 
 		if brd.CastlePerm&int(board.WKCT) != 0 {
@@ -193,8 +193,8 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 
 	}
 	if side == board.BLACK {
-        for pnum := 0; pnum < brd.PieceNum[board.Bp]; pnum++ {
-            sq := brd.PList[board.Bp][pnum]
+		for pnum := 0; pnum < brd.PieceNum[board.Bp]; pnum++ {
+			sq := brd.PList[board.Bp][pnum]
 			if sq <= 0 {
 				break
 			}
@@ -214,14 +214,14 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 			if board.RankArr[sq] == board.RANK_7 && brd.Pieces[sq-10] == board.EMPTY && brd.Pieces[sq-20] == board.EMPTY {
 				addQuietMove(brd, Move(board.Square(sq), board.Square(sq-20), board.EMPTY, board.EMPTY, FLAGPS), list)
 			}
-            if brd.EnP != board.NO_SQ {
-                if board.Square(sq-11) == (brd.EnP) {
-                    addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq-11), board.EMPTY, board.EMPTY, FLAGENP), list)
-                }
-                if board.Square(sq-9) == (brd.EnP) {
-                    addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq-9), board.EMPTY, board.EMPTY, FLAGENP), list)
-                }
-            }
+			if brd.EnP != board.NO_SQ {
+				if board.Square(sq-11) == (brd.EnP) {
+					addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq-11), board.EMPTY, board.EMPTY, FLAGENP), list)
+				}
+				if board.Square(sq-9) == (brd.EnP) {
+					addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq-9), board.EMPTY, board.EMPTY, FLAGENP), list)
+				}
+			}
 		}
 		if brd.CastlePerm&int(board.BKCT) != 0 {
 			if brd.Pieces[board.G8] == board.EMPTY && brd.Pieces[board.F8] == board.EMPTY {
@@ -244,11 +244,11 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 	startIndex := LoopSlidingPiecesIndex[side]
 	piece := LoopSlidingPieces[startIndex]
 	for piece != board.EMPTY {
-        for pnum := 0; pnum < brd.PieceNum[piece]; pnum++ {
-            sq := brd.PList[piece][pnum]
-            if brd.Pieces[sq] == board.EMPTY {
-                continue
-            }
+		for pnum := 0; pnum < brd.PieceNum[piece]; pnum++ {
+			sq := brd.PList[piece][pnum]
+			if brd.Pieces[sq] == board.EMPTY {
+				continue
+			}
 			if sq == 0 {
 				break
 			}
@@ -283,11 +283,11 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 	startIndex = NonSlidingPiecesIndex[side]
 	piece = NonSlidingPieces[startIndex]
 	for piece != board.EMPTY {
-        for pnum := 0; pnum < brd.PieceNum[piece]; pnum++ {
-            sq := brd.PList[piece][pnum]
-            if brd.Pieces[sq] == board.EMPTY {
-                continue
-            }
+		for pnum := 0; pnum < brd.PieceNum[piece]; pnum++ {
+			sq := brd.PList[piece][pnum]
+			if brd.Pieces[sq] == board.EMPTY {
+				continue
+			}
 			if sq == 0 {
 				break
 			}
@@ -342,8 +342,8 @@ func clearPiece(sq board.Square, brd *board.S_Board) {
 	}
 
 	// Clear piece from PList
-    for i := 0; i < brd.PieceNum[piece]; i++ {
-        val := brd.PList[piece][i]
+	for i := 0; i < brd.PieceNum[piece]; i++ {
+		val := brd.PList[piece][i]
 		if val == int(sq) {
 			t_pieceNum = i
 			break
@@ -410,8 +410,8 @@ func movePiece(from, to board.Square, brd *board.S_Board) {
 		board.SetBit(board.Square120to64[to], &brd.Pawns[board.BOTH])
 	}
 
-    for i := 0; i < brd.PieceNum[piece]; i++ {
-        val := brd.PList[piece][i]
+	for i := 0; i < brd.PieceNum[piece]; i++ {
+		val := brd.PList[piece][i]
 		if val == int(from) {
 			brd.PList[piece][i] = int(to)
 			flag = true
@@ -619,9 +619,9 @@ func hashPiece(brd *board.S_Board, piece board.Piece, square board.Square) {
 }
 
 func hashC(brd *board.S_Board) {
-    if brd.CastlePerm != 0 {
-        brd.PosKey ^= board.CastleKeys[brd.CastlePerm]
-    }
+	if brd.CastlePerm != 0 {
+		brd.PosKey ^= board.CastleKeys[brd.CastlePerm]
+	}
 }
 
 func hashSide(brd *board.S_Board) {
