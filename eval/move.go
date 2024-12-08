@@ -94,14 +94,11 @@ func Move(frm, to board.Square, capt, pro board.Piece, f1 uint32) uint32 {
 	SetCapturedPiece(&mv, capt)
 	SetPromotedPiece(&mv, pro)
 
-	if f1 == uint32(1)<<18 {
-		// set enp
+	if f1 == FLAGENP {
 		SetEnP(&mv)
-	}
-	if f1 == uint32(1)<<24 {
+	} else if f1 == FLAGC {
 		SetCastleFlag(&mv)
-	}
-	if f1 == uint32(1)<<19 {
+	} else if f1 == FLAGPS {
 		SetPawnStart(&mv)
 	}
 	return mv.Move
