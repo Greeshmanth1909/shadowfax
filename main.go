@@ -42,17 +42,17 @@ func main() {
 
 	// num := eval.PerftTest(5, &boardStructure)
 	// fmt.Println(num)
-    for {
-        val, _ := reader.ReadString('\n')
-        if val == "quit\n" {
-            break
-        }
-        mv := eval.ParseMove(val, &boardStructure)
-        if mv != 0 {
-            fmt.Println("move")
-        } else {
-            fmt.Println("naa")
-        }
-    }
-    
+	for {
+		val, _ := reader.ReadString('\n')
+		if val == "quit\n" {
+			break
+		}
+		mv := eval.ParseMove(val, &boardStructure)
+		if mv != 0 {
+			fmt.Println("move")
+		} else {
+			fmt.Println("naa")
+		}
+	}
+
 }

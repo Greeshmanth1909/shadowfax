@@ -2,7 +2,7 @@ package eval
 
 import (
 	"github.com/Greeshmanth1909/shadowfax/board"
-    "strconv"
+	"strconv"
 )
 
 const NOMOVE uint32 = 0
@@ -124,78 +124,78 @@ func getMove(mv *S_Move) (frm, to board.Square, capt, pro board.Piece, flag uint
 }
 
 func ParseMove(move string, brd *board.S_Board) uint32 {
-    if len(move) > 5 {
-        return NOMOVE
-    }
-    if !(move[0] >= 'a' && move[0] <= 'h') {
-        return NOMOVE
-    } 
-    if !(move[1] >= '1' && move[1] <= '8') {
-        return NOMOVE
-    } 
-    if !(move[2] >= 'a' && move[2] <= 'h') {
-        return NOMOVE
-    } 
-    if !(move[3] >= '1' && move[3] <= '8') {
-        return NOMOVE
-    }
+	if len(move) > 5 {
+		return NOMOVE
+	}
+	if !(move[0] >= 'a' && move[0] <= 'h') {
+		return NOMOVE
+	}
+	if !(move[1] >= '1' && move[1] <= '8') {
+		return NOMOVE
+	}
+	if !(move[2] >= 'a' && move[2] <= 'h') {
+		return NOMOVE
+	}
+	if !(move[3] >= '1' && move[3] <= '8') {
+		return NOMOVE
+	}
 
-    side := brd.Side
+	side := brd.Side
 
-    from := convertSquareStringToSquare(move[:2])
-    to := convertSquareStringToSquare(move[2:4])
+	from := convertSquareStringToSquare(move[:2])
+	to := convertSquareStringToSquare(move[2:4])
 
-    var mv S_Move
-    SetFromSquare(&mv, from)
-    SetToSquare(&mv, to)
+	var mv S_Move
+	SetFromSquare(&mv, from)
+	SetToSquare(&mv, to)
 
-    if brd.Pieces[to] != board.EMPTY {
-        SetCapturedPiece(&mv, brd.Pieces[to])
-    }
+	if brd.Pieces[to] != board.EMPTY {
+		SetCapturedPiece(&mv, brd.Pieces[to])
+	}
 
-    // castle enp ps
-    if board.PieceKing[brd.Pieces[from]] && (to == board.G1 || to == board.C1 || to == board.G8 || to == board.C8) {
-        SetCastleFlag(&mv)
-    }
+	// castle enp ps
+	if board.PieceKing[brd.Pieces[from]] && (to == board.G1 || to == board.C1 || to == board.G8 || to == board.C8) {
+		SetCastleFlag(&mv)
+	}
 
-    if !board.BigPiece[brd.Pieces[from]] {
-        if side == board.WHITE {
-            if board.RankArr[from] == board.RANK_2 && board.RankArr[to] == board.RANK_4 {
-                SetPawnStart(&mv)
-            }
-            if board.RankArr[to] == board.RANK_8 {
-                if len(move) != 5 {
-                    return NOMOVE
-                }
-                pro := checkPromPiece(move, side)
-                SetPromotedPiece(&mv, pro)
-            }
-        } else {
-            if board.RankArr[from] == board.RANK_7 && board.RankArr[to] == board.RANK_5 {
-                SetPawnStart(&mv)
-            }
-            if board.RankArr[to] == board.RANK_1 {
-                if len(move) != 5 {
-                    return NOMOVE
-                }
-                pro := checkPromPiece(move, side)
-                SetPromotedPiece(&mv, pro)
-            }
-        }
-        if brd.EnP == to {
-            SetEnP(&mv)
-        }
-    }
+	if !board.BigPiece[brd.Pieces[from]] {
+		if side == board.WHITE {
+			if board.RankArr[from] == board.RANK_2 && board.RankArr[to] == board.RANK_4 {
+				SetPawnStart(&mv)
+			}
+			if board.RankArr[to] == board.RANK_8 {
+				if len(move) != 5 {
+					return NOMOVE
+				}
+				pro := checkPromPiece(move, side)
+				SetPromotedPiece(&mv, pro)
+			}
+		} else {
+			if board.RankArr[from] == board.RANK_7 && board.RankArr[to] == board.RANK_5 {
+				SetPawnStart(&mv)
+			}
+			if board.RankArr[to] == board.RANK_1 {
+				if len(move) != 5 {
+					return NOMOVE
+				}
+				pro := checkPromPiece(move, side)
+				SetPromotedPiece(&mv, pro)
+			}
+		}
+		if brd.EnP == to {
+			SetEnP(&mv)
+		}
+	}
 
-    // generate all moves
-    var mvList S_MoveList
-    GenerateAllMoves(brd, &mvList)
-    for _, val := range mvList.MoveList {
-        if val.Move == mv.Move {
-            return mv.Move
-        }
-    }
-    return NOMOVE
+	// generate all moves
+	var mvList S_MoveList
+	GenerateAllMoves(brd, &mvList)
+	for _, val := range mvList.MoveList {
+		if val.Move == mv.Move {
+			return mv.Move
+		}
+	}
+	return NOMOVE
 }
 
 func convertSquareStringToSquare(square string) board.Square {
@@ -224,16 +224,16 @@ func convertSquareStringToSquare(square string) board.Square {
 }
 
 func checkPromPiece(move string, side board.Color) board.Piece {
-    str := rune(move[4])
-    pieces := map[rune][2]board.Piece{
-        'q': {board.Wq, board.Bq},
-        'r': {board.Wr, board.Br},
-        'b': {board.Wb, board.Bb},
-        'n': {board.Wn, board.Bn},
-    }
-    ls, ok := pieces[str]
-    if !ok {
-        return pieces['q'][side]
-    }
-    return ls[side]
+	str := rune(move[4])
+	pieces := map[rune][2]board.Piece{
+		'q': {board.Wq, board.Bq},
+		'r': {board.Wr, board.Br},
+		'b': {board.Wb, board.Bb},
+		'n': {board.Wn, board.Bn},
+	}
+	ls, ok := pieces[str]
+	if !ok {
+		return pieces['q'][side]
+	}
+	return ls[side]
 }
