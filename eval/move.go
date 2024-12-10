@@ -123,21 +123,21 @@ func getMove(mv *S_Move) (frm, to board.Square, capt, pro board.Piece, flag uint
 	return frm, to, capt, pro, flag
 }
 
-func ParseMove(move string, brd *board.S_Board) uint32 {
+func ParseMove(move string, brd *board.S_Board) (bool, uint32) {
 	if len(move) > 5 {
-		return NOMOVE
+		return false, NOMOVE
 	}
 	if !(move[0] >= 'a' && move[0] <= 'h') {
-		return NOMOVE
+		return false, NOMOVE
 	}
 	if !(move[1] >= '1' && move[1] <= '8') {
-		return NOMOVE
+		return false, NOMOVE
 	}
 	if !(move[2] >= 'a' && move[2] <= 'h') {
-		return NOMOVE
+		return false, NOMOVE
 	}
 	if !(move[3] >= '1' && move[3] <= '8') {
-		return NOMOVE
+		return false, NOMOVE
 	}
 
 	side := brd.Side
@@ -147,6 +147,9 @@ func ParseMove(move string, brd *board.S_Board) uint32 {
 
 	var mvList S_MoveList
 	GenerateAllMoves(brd, &mvList)
+    if mvList.MoveList[0].Move == 0 {
+        return true, NOMOVE
+    }
 	for _, val := range mvList.MoveList {
 		legalFrom := GetFromSquare(&val)
 		legalTo := GetToSquare(&val)
@@ -155,13 +158,13 @@ func ParseMove(move string, brd *board.S_Board) uint32 {
 				pro := checkPromPiece(move, side)
 				legalPromPiece := GetPromotedPiece(&val)
 				if pro == legalPromPiece {
-					return val.Move
+					return false, val.Move
 				}
 			}
-			return val.Move
+			return false, val.Move
 		}
 	}
-	return NOMOVE
+	return false, NOMOVE
 }
 
 func convertSquareStringToSquare(square string) board.Square {
