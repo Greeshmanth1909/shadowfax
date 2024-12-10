@@ -145,54 +145,20 @@ func ParseMove(move string, brd *board.S_Board) uint32 {
 	from := convertSquareStringToSquare(move[:2])
 	to := convertSquareStringToSquare(move[2:4])
 
-	var mv S_Move
-	SetFromSquare(&mv, from)
-	SetToSquare(&mv, to)
-
-	if brd.Pieces[to] != board.EMPTY {
-		SetCapturedPiece(&mv, brd.Pieces[to])
-	}
-
-	// castle enp ps
-	if board.PieceKing[brd.Pieces[from]] && (to == board.G1 || to == board.C1 || to == board.G8 || to == board.C8) {
-		SetCastleFlag(&mv)
-	}
-
-	if !board.BigPiece[brd.Pieces[from]] {
-		if side == board.WHITE {
-			if board.RankArr[from] == board.RANK_2 && board.RankArr[to] == board.RANK_4 {
-				SetPawnStart(&mv)
-			}
-			if board.RankArr[to] == board.RANK_8 {
-				if len(move) != 5 {
-					return NOMOVE
-				}
-				pro := checkPromPiece(move, side)
-				SetPromotedPiece(&mv, pro)
-			}
-		} else {
-			if board.RankArr[from] == board.RANK_7 && board.RankArr[to] == board.RANK_5 {
-				SetPawnStart(&mv)
-			}
-			if board.RankArr[to] == board.RANK_1 {
-				if len(move) != 5 {
-					return NOMOVE
-				}
-				pro := checkPromPiece(move, side)
-				SetPromotedPiece(&mv, pro)
-			}
-		}
-		if brd.EnP == to {
-			SetEnP(&mv)
-		}
-	}
-
-	// generate all moves
 	var mvList S_MoveList
 	GenerateAllMoves(brd, &mvList)
 	for _, val := range mvList.MoveList {
-		if val.Move == mv.Move {
-			return mv.Move
+		legalFrom := GetFromSquare(&val)
+		legalTo := GetToSquare(&val)
+		if legalFrom == from && legalTo == to {
+			if len(move) == 5 {
+				pro := checkPromPiece(move, side)
+				legalPromPiece := GetPromotedPiece(&val)
+				if pro == legalPromPiece {
+					return val.Move
+				}
+			}
+			return val.Move
 		}
 	}
 	return NOMOVE

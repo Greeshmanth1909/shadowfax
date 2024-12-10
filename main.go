@@ -23,7 +23,7 @@ func main() {
 
 	var list eval.S_MoveList
 	eval.GenerateAllMoves(&boardStructure, &list)
-	eval.PrintMoveList(&list)
+	// eval.PrintMoveList(&list)
 
 	// fmt.Println(boardStructure.EnP)
 
@@ -43,15 +43,18 @@ func main() {
 	// num := eval.PerftTest(5, &boardStructure)
 	// fmt.Println(num)
 	for {
+		position.PrintBoard(&boardStructure)
 		val, _ := reader.ReadString('\n')
 		if val == "quit\n" {
 			break
 		}
 		mv := eval.ParseMove(val, &boardStructure)
 		if mv != 0 {
-			fmt.Println("move")
+			var m eval.S_Move
+			m.Move = mv
+			eval.MakeMove(&boardStructure, &m)
 		} else {
-			fmt.Println("naa")
+			fmt.Println("Invalid move")
 		}
 	}
 
