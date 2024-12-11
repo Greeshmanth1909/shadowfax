@@ -211,6 +211,6 @@ type PvEntry struct {
 }
 
 type PvTable struct {
-	PvTableEntries []PvEntry
+	PvTableEntries map[uint64]PvEntry
 	NumEntries     int
 }

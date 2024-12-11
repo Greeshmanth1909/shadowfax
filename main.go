@@ -20,6 +20,7 @@ func main() {
 	startString := position.StartPosition
 	// startString = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 	var boardStructure board.S_Board
+	board.InitPvTable(&boardStructure)
 	position.Parse_FEN(&startString, &boardStructure)
 	position.PrintBoard(&boardStructure)
 

@@ -1,15 +1,17 @@
 package board
 
-func ClearPVTable(brd *S_Board) {
-	for i := range brd.PvTable.PvTableEntries {
-		brd.PvTable.PvTableEntries[i].PosKey = 0
-		brd.PvTable.PvTableEntries[i].Move = 0
-	}
+func InitPvTable(brd *S_Board) {
+	var new PvTable
+	brd.PvTable = &new
 }
 
-func InitPvTable(brd *S_Board, num int) {
-	var newP PvTable
-	newP.PvTableEntries = make([]PvEntry, num)
-	newP.NumEntries = num
-	brd.PvTable = &newP
+/* I'm not sure weather I should manually clear pv table or let the GC handle it. I'll let the GC handle it for now
+   i.e. call intipvTable when it needs clearing
+*/
+
+func SetPvTable(brd *S_Board, pos uint64, move uint32) {
+	var pvE PvEntry
+	pvE.Move = move
+	pvE.PosKey = pos
+	brd.PvTable.PvTableEntries[pos] = pvE
 }
