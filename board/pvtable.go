@@ -9,9 +9,17 @@ func InitPvTable(brd *S_Board) {
    i.e. call intipvTable when it needs clearing
 */
 
-func SetPvTable(brd *S_Board, pos uint64, move uint32) {
+func StorePvMove(brd *S_Board, pos uint64, move uint32) {
 	var pvE PvEntry
 	pvE.Move = move
 	pvE.PosKey = pos
 	brd.PvTable.PvTableEntries[pos] = pvE
+}
+
+func ProbePvTable(brd S_Board, pos uint64) uint32 {
+	pv, ok := brd.PvTable.PvEntries[pos]
+	if ok {
+		return pv.Move
+	}
+	return 0
 }
