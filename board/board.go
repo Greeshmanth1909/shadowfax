@@ -194,6 +194,7 @@ type S_Board struct {
 	Material   [2]int
 	History    [MAXGAMEMOVES]S_Undo
 	PList      [13][10]int
+	PvTable    *PvTable
 }
 
 type S_Undo struct {
@@ -202,4 +203,14 @@ type S_Undo struct {
 	EnP        Square
 	FiftyMove  int
 	PosKey     uint64
+}
+
+type PvEntry struct {
+	PosKey uint64
+	Move   uint32
+}
+
+type PvTable struct {
+	PvTableEntries []PvEntry
+	NumEntries     int
 }

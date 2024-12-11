@@ -3,13 +3,13 @@ package main
 import (
 	"bufio"
 	"fmt"
-    "time"
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"github.com/Greeshmanth1909/shadowfax/eval"
 	"github.com/Greeshmanth1909/shadowfax/position"
-	"github.com/Greeshmanth1909/shadowfax/util"
 	"github.com/Greeshmanth1909/shadowfax/search"
+	"github.com/Greeshmanth1909/shadowfax/util"
 	"os"
+	"time"
 )
 
 func main() {
@@ -46,23 +46,23 @@ func main() {
 		position.PrintBoard(&boardStructure)
 		val, _ := reader.ReadString('\n')
 		isCheckmate, mv := eval.ParseMove(val, &boardStructure)
-        if isCheckmate {
-            fmt.Println("Checkmate!")
-            break
-        }
+		if isCheckmate {
+			fmt.Println("Checkmate!")
+			break
+		}
 		if val == "quit\n" {
 			break
 		}
-        if val == "t\n" {
-            eval.TakeMove(&boardStructure)
-        }
-        if val == "p\n" {
-            start := time.Now()
-            num := eval.PerftTest(4, &boardStructure)
-            fmt.Println(num)
-            end := time.Since(start).Milliseconds()
-            fmt.Printf("TIME IN MS: %v\n", end)
-        }
+		if val == "t\n" {
+			eval.TakeMove(&boardStructure)
+		}
+		if val == "p\n" {
+			start := time.Now()
+			num := eval.PerftTest(4, &boardStructure)
+			fmt.Println(num)
+			end := time.Since(start).Milliseconds()
+			fmt.Printf("TIME IN MS: %v\n", end)
+		}
 		if mv != 0 {
 			var m eval.S_Move
 			m.Move = mv
@@ -70,9 +70,9 @@ func main() {
 		} else {
 			fmt.Println("Invalid move")
 		}
-        if search.IsRepetition(&boardStructure) {
-            fmt.Println("position repeated")
-        }
+		if search.IsRepetition(&boardStructure) {
+			fmt.Println("position repeated")
+		}
 	}
 
 }

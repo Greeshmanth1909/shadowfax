@@ -147,9 +147,9 @@ func ParseMove(move string, brd *board.S_Board) (bool, uint32) {
 
 	var mvList S_MoveList
 	GenerateAllMoves(brd, &mvList)
-    if mvList.MoveList[0].Move == 0 {
-        return true, NOMOVE
-    }
+	if mvList.MoveList[0].Move == 0 {
+		return true, NOMOVE
+	}
 	for _, val := range mvList.MoveList {
 		legalFrom := GetFromSquare(&val)
 		legalTo := GetToSquare(&val)
