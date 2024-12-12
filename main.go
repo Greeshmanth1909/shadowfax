@@ -9,7 +9,7 @@ import (
 	"github.com/Greeshmanth1909/shadowfax/search"
 	"github.com/Greeshmanth1909/shadowfax/util"
 	"os"
-	"time"
+	// "time"
 )
 
 func main() {
@@ -58,16 +58,30 @@ func main() {
 			eval.TakeMove(&boardStructure)
 		}
 		if val == "p\n" {
-			start := time.Now()
-			num := eval.PerftTest(4, &boardStructure)
-			fmt.Println(num)
-			end := time.Since(start).Milliseconds()
-			fmt.Printf("TIME IN MS: %v\n", end)
+			// start := time.Now()
+			// num := eval.PerftTest(4, &boardStructure)
+			// fmt.Println(num)
+			// end := time.Since(start).Milliseconds()
+			// fmt.Printf("TIME IN MS: %v\n", end)
+			for i := 0; i < boardStructure.PvTable.NumEntries; i++ {
+				val := boardStructure.PvArray[i]
+				var mv eval.S_Move
+				mv.Move = val
+				eval.PrintMove(&mv)
+			}
+
 		}
 		if mv != 0 {
 			var m eval.S_Move
 			m.Move = mv
-			eval.MakeMove(&boardStructure, &m)
+			if eval.MakeMove(&boardStructure, &m) {
+				var p board.PvEntry
+				p.PosKey = boardStructure.PosKey
+				p.Move = mv
+				boardStructure.PvTable.PvTableEntries[boardStructure.PosKey] = p
+				boardStructure.PvArray[boardStructure.PvTable.NumEntries] = mv
+				boardStructure.PvTable.NumEntries++
+			}
 		} else {
 			fmt.Println("Invalid move")
 		}

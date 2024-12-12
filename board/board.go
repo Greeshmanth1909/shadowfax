@@ -9,6 +9,8 @@ const BrdSqrNum int = 120
 
 const MAXGAMEMOVES int = 1028
 
+const MAXDEPTH int = 64
+
 // rank and file arrays
 var FileArr [BrdSqrNum]File
 var RankArr [BrdSqrNum]Rank
@@ -195,6 +197,7 @@ type S_Board struct {
 	History    [MAXGAMEMOVES]S_Undo
 	PList      [13][10]int
 	PvTable    *PvTable
+	PvArray    [MAXDEPTH]uint32
 }
 
 type S_Undo struct {

@@ -2,6 +2,7 @@ package board
 
 func InitPvTable(brd *S_Board) {
 	var new PvTable
+	new.PvTableEntries = make(map[uint64]PvEntry)
 	brd.PvTable = &new
 }
 
@@ -17,7 +18,7 @@ func StorePvMove(brd *S_Board, pos uint64, move uint32) {
 }
 
 func ProbePvTable(brd S_Board, pos uint64) uint32 {
-	pv, ok := brd.PvTable.PvEntries[pos]
+	pv, ok := brd.PvTable.PvTableEntries[pos]
 	if ok {
 		return pv.Move
 	}
