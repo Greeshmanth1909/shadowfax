@@ -179,25 +179,27 @@ const (
 )
 
 type S_Board struct {
-	Pieces     [BrdSqrNum]Piece
-	Pawns      [3]uint64
-	KingSquare [2]int
-	EnP        Square
-	Side       Color
-	FiftyMove  int
-	CastlePerm int
-	Ply        int
-	HisPly     int
-	PosKey     uint64
-	PieceNum   [13]int
-	BigPiece   [2]int
-	MinPiece   [2]int
-	MajPiece   [2]int
-	Material   [2]int
-	History    [MAXGAMEMOVES]S_Undo
-	PList      [13][10]int
-	PvTable    *PvTable
-	PvArray    [MAXDEPTH]uint32
+	Pieces             [BrdSqrNum]Piece
+	Pawns              [3]uint64
+	KingSquare         [2]int
+	EnP                Square
+	Side               Color
+	FiftyMove          int
+	CastlePerm         int
+	Ply                int
+	HisPly             int
+	PosKey             uint64
+	PieceNum           [13]int
+	BigPiece           [2]int
+	MinPiece           [2]int
+	MajPiece           [2]int
+	Material           [2]int
+	History            [MAXGAMEMOVES]S_Undo
+	PList              [13][10]int
+	PvTable            *PvTable
+	PvArray            [MAXDEPTH]uint32
+	SearchHistoryArray [13][BrdSqrNum]uint32
+	SearchKillers      [2][MAXDEPTH]uint32
 }
 
 type S_Undo struct {
@@ -216,4 +218,17 @@ type PvEntry struct {
 type PvTable struct {
 	PvTableEntries map[uint64]PvEntry
 	NumEntries     int
+}
+
+type S_SearchInfo struct {
+	StartTime   int
+	StopTime    int
+	Depth       int
+	DepthSet    int
+	TimeSet     int
+	Quit        int
+	Stopped     int
+	MoveControl int
+	Infinite    int
+	Nodes       int32
 }
