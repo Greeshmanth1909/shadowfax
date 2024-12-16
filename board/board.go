@@ -1,5 +1,7 @@
 package board
 
+import "time"
+
 // define board of 120 int array
 var Board [120]uint64
 
@@ -221,7 +223,7 @@ type PvTable struct {
 }
 
 type S_SearchInfo struct {
-	StartTime   int
+	StartTime   time.Time
 	StopTime    int
 	Depth       int
 	DepthSet    int
