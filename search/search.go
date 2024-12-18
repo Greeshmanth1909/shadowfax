@@ -73,8 +73,8 @@ func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
 	info.StartTime = time.Now()
 	info.Stopped = 0
 	info.Nodes = 0
-    info.Fh = 0
-    info.FhF = 0
+	info.Fh = 0
+	info.FhF = 0
 }
 
 func Quiescence(alpha, beta int, brd *board.S_Board, info *board.S_SearchInfo) (score int) {
@@ -82,61 +82,60 @@ func Quiescence(alpha, beta int, brd *board.S_Board, info *board.S_SearchInfo) (
 }
 
 func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S_SearchInfo) int {
-    board.CheckBoard(brd)
-    if depth == 0 {
-        info.Nodes++
-        return EvalPosition(brd)
-    }
+	board.CheckBoard(brd)
+	if depth == 0 {
+		info.Nodes++
+		return EvalPosition(brd)
+	}
 
-    info.Nodes++
-    if IsRepetition(brd) || brd.FiftyMove >= 100 {
-        return 0
-    }
+	info.Nodes++
+	if IsRepetition(brd) || brd.FiftyMove >= 100 {
+		return 0
+	}
 
-    if brd.Ply > board.MAXDEPTH - 1 {
-       return EvalPosition(brd)
-    }
+	if brd.Ply > board.MAXDEPTH-1 {
+		return EvalPosition(brd)
+	}
 
-    var list eval.S_MoveList
-    eval.GenerateAllMoves(brd, &list)
+	var list eval.S_MoveList
+	eval.GenerateAllMoves(brd, &list)
 
-    legal := 0
-    oldAlpha := alpha
-    bestMove := uint32(0)
-    score := -Inf
+	legal := 0
+	oldAlpha := alpha
+	bestMove := uint32(0)
+	score := -Inf
 
+	for i := 0; i < list.Count; i++ {
+		mv := list.MoveList[i]
+		if !eval.MakeMove(brd, &mv) {
+			continue
+		}
+		legal++
+		score = -AlphaBeta(-beta, -alpha, depth-1, 1, brd, info)
+		eval.TakeMove(brd)
 
-    for i := 0; i < list.Count; i++ {
-        mv := list.MoveList[i]
-        if !eval.MakeMove(brd, &mv) {
-            continue
-        }
-        legal++
-        score = -AlphaBeta(-beta, -alpha, depth - 1, 1, brd, info)
-        eval.TakeMove(brd)
+		if score > alpha {
+			if score >= beta {
+				if legal == 1 {
+					info.FhF++
+				}
+				info.Fh++
+				return beta
+			}
+			alpha = score
+			bestMove = mv.Move
+		}
+	}
 
-        if score > alpha {
-            if score >= beta {
-                if legal == 1 {
-                    info.FhF++
-                }
-                info.Fh++
-                return beta
-            }
-            alpha = score
-            bestMove = mv.Move
-        }
-    }
+	if legal == 0 {
+		if eval.SquareAttacked(board.Square(brd.KingSquare[brd.Side]), brd.Side^1, brd) {
+			return -Mate + brd.Ply
+		}
+		return 0
+	}
 
-    if legal == 0 {
-        if eval.SquareAttacked(board.Square(brd.KingSquare[brd.Side]), brd.Side^1, brd) {
-            return -Mate + brd.Ply
-        }
-        return 0
-    }
-
-    if alpha != oldAlpha {
-        board.StorePvMove(brd, brd.PosKey, bestMove)
-    }
-    return alpha
+	if alpha != oldAlpha {
+		board.StorePvMove(brd, brd.PosKey, bestMove)
+	}
+	return alpha
 }
