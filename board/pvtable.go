@@ -17,10 +17,11 @@ func StorePvMove(brd *S_Board, pos uint64, move uint32) {
 	brd.PvTable.PvTableEntries[pos] = pvE
 }
 
-func ProbePvTable(brd S_Board, pos uint64) uint32 {
+func ProbePvTable(brd *S_Board, pos uint64) uint32 {
 	pv, ok := brd.PvTable.PvTableEntries[pos]
 	if ok {
 		return pv.Move
 	}
 	return 0
 }
+

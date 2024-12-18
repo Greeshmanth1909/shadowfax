@@ -19,6 +19,7 @@ func main() {
 
 	startString := position.StartPosition
 	// startString = "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
+    startString = "2rr3k/pp3pp1/1nnqbN1p/3pN3/2pP4/2P3Q1/PPB4P/R4RK1 w - - 0 1"
 	var boardStructure board.S_Board
 	board.InitPvTable(&boardStructure)
 	position.Parse_FEN(&startString, &boardStructure)
@@ -42,6 +43,7 @@ func main() {
 	// 	newT, _ := reader.ReadString('\n')
 	// 	fmt.Println(newT)
 	// }
+    var info board.S_SearchInfo
 
 	for {
 		position.PrintBoard(&boardStructure)
@@ -57,18 +59,14 @@ func main() {
 		if val == "t\n" {
 			eval.TakeMove(&boardStructure)
 		}
-		if val == "p\n" {
+		if val == "s\n" {
 			// start := time.Now()
 			// num := eval.PerftTest(4, &boardStructure)
 			// fmt.Println(num)
 			// end := time.Since(start).Milliseconds()
 			// fmt.Printf("TIME IN MS: %v\n", end)
-			for i := 0; i < boardStructure.PvTable.NumEntries; i++ {
-				val := boardStructure.PvArray[i]
-				var mv eval.S_Move
-				mv.Move = val
-				eval.PrintMove(&mv)
-			}
+            info.Depth = 5
+            search.SearchPositions(&boardStructure, &info)
 
 		}
 		if mv != 0 {

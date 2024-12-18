@@ -4,9 +4,11 @@ import (
 	"fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"github.com/Greeshmanth1909/shadowfax/eval"
-	"math"
 	"time"
 )
+
+const Inf int = 30000
+const Mate int = 29000
 
 func CheckUp() {
 	// check if time up or interrupt from GUI
@@ -26,22 +28,20 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 	var bestMove uint32
 	var bestScore int
 	var currentDepth int
-	// var pvMoves int
-	// var pvNum int
+	var pvMoves int
 
-	bestScore = int(math.Inf(-1))
+	bestScore = -Inf
 	ClearForSearch(brd, info)
 
 	for currentDepth = 0; currentDepth < info.Depth; currentDepth++ {
-		bestScore = AlphaBeta(int(math.Inf(-1)), int(math.Inf(1)), currentDepth, 1, brd, info)
-		// pvMoves = GetPvLine(currentDepth, brd)
+		bestScore = AlphaBeta(-Inf, Inf, currentDepth, 1, brd, info)
+		pvMoves = eval.GetPvLine(currentDepth, brd)
 		bestMove = brd.PvArray[0]
 		fmt.Printf("score %v depth %v nodes %v\n", bestScore, currentDepth, info.Nodes)
 		fmt.Printf("move ")
 		var m eval.S_Move
 		m.Move = bestMove
-		eval.PrintMove(&m)
-		for i := 0; i < brd.PvTable.NumEntries; i++ {
+		for i := 0; i < pvMoves; i++ {
 			val := brd.PvArray[i]
 			var mv eval.S_Move
 			mv.Move = val
@@ -73,11 +73,70 @@ func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
 	info.StartTime = time.Now()
 	info.Stopped = 0
 	info.Nodes = 0
+    info.Fh = 0
+    info.FhF = 0
 }
 
 func Quiescence(alpha, beta int, brd *board.S_Board, info *board.S_SearchInfo) (score int) {
 	return
 }
-func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S_SearchInfo) (score int) {
-	return
+
+func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S_SearchInfo) int {
+    board.CheckBoard(brd)
+    if depth == 0 {
+        info.Nodes++
+        return EvalPosition(brd)
+    }
+
+    info.Nodes++
+    if IsRepetition(brd) || brd.FiftyMove >= 100 {
+        return 0
+    }
+
+    if brd.Ply > board.MAXDEPTH - 1 {
+       return EvalPosition(brd)
+    }
+
+    var list eval.S_MoveList
+    eval.GenerateAllMoves(brd, &list)
+
+    legal := 0
+    oldAlpha := alpha
+    bestMove := uint32(0)
+    score := -Inf
+
+
+    for i := 0; i < list.Count; i++ {
+        mv := list.MoveList[i]
+        if !eval.MakeMove(brd, &mv) {
+            continue
+        }
+        legal++
+        score = -AlphaBeta(-beta, -alpha, depth - 1, 1, brd, info)
+        eval.TakeMove(brd)
+
+        if score > alpha {
+            if score >= beta {
+                if legal == 1 {
+                    info.FhF++
+                }
+                info.Fh++
+                return beta
+            }
+            alpha = score
+            bestMove = mv.Move
+        }
+    }
+
+    if legal == 0 {
+        if eval.SquareAttacked(board.Square(brd.KingSquare[brd.Side]), brd.Side^1, brd) {
+            return -Mate + brd.Ply
+        }
+        return 0
+    }
+
+    if alpha != oldAlpha {
+        board.StorePvMove(brd, brd.PosKey, bestMove)
+    }
+    return alpha
 }

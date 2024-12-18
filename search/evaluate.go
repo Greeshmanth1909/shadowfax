@@ -95,16 +95,16 @@ func EvalPosition(brd *board.S_Board) (score int) {
 
 	piece = board.Wp
 	for pieceNum := 0; pieceNum < brd.PieceNum[piece]; pieceNum++ {
-		square = board.Square(brd.Pieces[pieceNum])
+		square = board.Square(brd.PList[piece][pieceNum])
 		if square == board.OFFBOARD || square == board.Square(board.EMPTY) {
-			log.Fatalf("Invalid square")
+			log.Fatalf("Invalid square %v", square)
 		}
 		score += PawnTable[board.Square120to64[square]]
 	}
 
 	piece = board.Bp
 	for pieceNum := 0; pieceNum < brd.PieceNum[piece]; pieceNum++ {
-		square = board.Square(brd.Pieces[pieceNum])
+		square = board.Square(brd.PList[piece][pieceNum])
 		if square == board.OFFBOARD || square == board.Square(board.EMPTY) {
 			log.Fatalf("Invalid square")
 		}
@@ -113,7 +113,7 @@ func EvalPosition(brd *board.S_Board) (score int) {
 
 	piece = board.Wn
 	for pieceNum := 0; pieceNum < brd.PieceNum[piece]; pieceNum++ {
-		square = board.Square(brd.Pieces[pieceNum])
+		square = board.Square(brd.PList[piece][pieceNum])
 		if square == board.OFFBOARD || square == board.Square(board.EMPTY) {
 			log.Fatalf("Invalid square")
 		}
@@ -122,7 +122,7 @@ func EvalPosition(brd *board.S_Board) (score int) {
 
 	piece = board.Bn
 	for pieceNum := 0; pieceNum < brd.PieceNum[piece]; pieceNum++ {
-		square = board.Square(brd.Pieces[pieceNum])
+		square = board.Square(brd.PList[piece][pieceNum])
 		if square == board.OFFBOARD || square == board.Square(board.EMPTY) {
 			log.Fatalf("Invalid square")
 		}
@@ -131,7 +131,7 @@ func EvalPosition(brd *board.S_Board) (score int) {
 
 	piece = board.Wb
 	for pieceNum := 0; pieceNum < brd.PieceNum[piece]; pieceNum++ {
-		square = board.Square(brd.Pieces[pieceNum])
+		square = board.Square(brd.PList[piece][pieceNum])
 		if square == board.OFFBOARD || square == board.Square(board.EMPTY) {
 			log.Fatalf("Invalid square")
 		}
@@ -140,7 +140,7 @@ func EvalPosition(brd *board.S_Board) (score int) {
 
 	piece = board.Bb
 	for pieceNum := 0; pieceNum < brd.PieceNum[piece]; pieceNum++ {
-		square = board.Square(brd.Pieces[pieceNum])
+		square = board.Square(brd.PList[piece][pieceNum])
 		if square == board.OFFBOARD || square == board.Square(board.EMPTY) {
 			log.Fatalf("Invalid square")
 		}
@@ -167,7 +167,7 @@ func EvalPosition(brd *board.S_Board) (score int) {
 
 	piece = board.Wr
 	for pieceNum := 0; pieceNum < brd.PieceNum[piece]; pieceNum++ {
-		square = board.Square(brd.Pieces[pieceNum])
+		square = board.Square(brd.PList[piece][pieceNum])
 		if square == board.OFFBOARD || square == board.Square(board.EMPTY) {
 			log.Fatalf("Invalid square")
 		}
@@ -176,7 +176,7 @@ func EvalPosition(brd *board.S_Board) (score int) {
 
 	piece = board.Br
 	for pieceNum := 0; pieceNum < brd.PieceNum[piece]; pieceNum++ {
-		square = board.Square(brd.Pieces[pieceNum])
+		square = board.Square(brd.PList[piece][pieceNum])
 		if square == board.OFFBOARD || square == board.Square(board.EMPTY) {
 			log.Fatalf("Invalid square")
 		}

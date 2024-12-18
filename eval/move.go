@@ -206,3 +206,24 @@ func checkPromPiece(move string, side board.Color) board.Piece {
 	}
 	return ls[side]
 }
+
+// adds valid moves from pv table to pv array
+func GetPvLine(depth int, brd *board.S_Board) int {
+    move := board.ProbePvTable(brd, brd.PosKey)
+    count := 0
+    for move != 0 && count < depth {
+        var m S_Move
+        m.Move = move
+        if MakeMove(brd, &m) {
+            brd.PvArray[count] = move
+            count++
+        } else {
+            break
+        }
+        move = board.ProbePvTable(brd, brd.PosKey)
+    }
+    for brd.Ply > 0 {
+        TakeMove(brd)
+    }
+    return count
+}

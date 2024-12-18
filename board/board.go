@@ -233,4 +233,6 @@ type S_SearchInfo struct {
 	MoveControl int
 	Infinite    int
 	Nodes       int32
+    Fh float32
+    FhF float32
 }
