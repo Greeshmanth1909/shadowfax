@@ -2,6 +2,7 @@ package util
 
 import (
 	"github.com/Greeshmanth1909/shadowfax/board"
+	"github.com/Greeshmanth1909/shadowfax/eval"
 )
 
 func InitAll() {
@@ -10,4 +11,5 @@ func InitAll() {
 	board.InitBitMasks()
 	board.InitHashKeys()
 	board.InitFileRankArrays()
+	eval.InitMvvLva()
 }

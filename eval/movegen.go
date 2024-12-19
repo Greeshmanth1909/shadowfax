@@ -1,6 +1,7 @@
 package eval
 
 import (
+	"fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"log"
 	"os"
@@ -11,11 +12,51 @@ func init() {
 	log.SetOutput(os.Stdout)
 }
 
+// use arrays to infer to most valuable victim least valuable attacker
+var vicArray = [13]int{0, 100, 200, 300, 400, 500, 600, 100, 200, 300, 400, 500, 600}
+var MVVLVA [13][13]int
+
 const FLAGENP = uint32(1) << 18
 const FLAGPS = uint32(1) << 19
 const FLAGC = uint32(1) << 24
 
 const MAXPOSITIONMOVES = 256
+
+// InitMvvLVa function initialises mvvlva array
+func InitMvvLva() {
+	for victim := board.Wp; victim < board.Bk; victim++ {
+		for attacker := board.Wp; attacker < board.Bk; attacker++ {
+			MVVLVA[victim][attacker] = vicArray[victim] + 6 - (vicArray[attacker] / 100)
+		}
+	}
+
+	for victim := board.Wp; victim < board.Bk; victim++ {
+		for attacker := board.Wp; attacker < board.Bk; attacker++ {
+			fmt.Println(GetPromotedPieceAlgdebug(attacker), " x ", GetPromotedPieceAlgdebug(victim), " ", MVVLVA[victim][attacker])
+		}
+	}
+
+}
+
+// temporary function for debugging
+func GetPromotedPieceAlgdebug(p board.Piece) string {
+	switch p {
+	case board.Wn, board.Bn:
+		return "n"
+	case board.Wb, board.Bb:
+		return "b"
+	case board.Wq, board.Bq:
+		return "q"
+	case board.Wr, board.Br:
+		return "r"
+	case board.Wp, board.Bp:
+		return "p"
+	case board.Wk, board.Bk:
+		return "k"
+	default:
+		return "p"
+	}
+}
 
 var CastlePerm = [120]int{
 	15, 15, 15, 15, 15, 15, 15, 15, 15, 15,
@@ -67,12 +108,14 @@ func addQuietMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 
 func addCaptureMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
-	list.MoveList[list.Count].Score = 0
+    var m S_Move
+    m.Move = move
+	list.MoveList[list.Count].Score = MVVLVA[GetCapturedPiece(&m)][brd.Pieces[GetFromSquare(&m)]]
 	list.Count++
 }
 func addEnPassantMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
-	list.MoveList[list.Count].Score = 0
+	list.MoveList[list.Count].Score = 105
 	list.Count++
 }
 
