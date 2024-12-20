@@ -105,6 +105,17 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 	oldAlpha := alpha
 	bestMove := uint32(0)
 	score := -Inf
+    pvMove := board.ProbePvTable(brd, brd.PosKey)
+
+    if pvMove != 0 {
+        for i := 0; i < list.Count; i++ {
+            mv := list.MoveList[i]
+            if mv.Move == pvMove {
+                list.MoveList[i].Score = 2000000
+                break
+            }
+        }
+    }
 
 	for i := 0; i < list.Count; i++ {
 		PickNextMove(i, &list)
@@ -122,10 +133,18 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 					info.FhF++
 				}
 				info.Fh++
+                if eval.GetCapturedPiece(&mv) == 0 {
+                    brd.SearchKillers[1][brd.Ply] = brd.SearchKillers[0][brd.Ply]
+                    brd.SearchKillers[0][brd.Ply] = mv.Move
+                }
 				return beta
 			}
 			alpha = score
 			bestMove = mv.Move
+            if eval.GetCapturedPiece(&mv) == 0 {
+                brd.SearchHistoryArray[brd.Pieces[eval.GetFromSquare(&mv)]][eval.GetToSquare(&mv)] += uint32(depth)
+
+            }
 		}
 	}
 

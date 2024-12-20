@@ -74,7 +74,17 @@ var PieceDirNum = [13]int{0, 0, 8, 4, 4, 8, 8, 0, 8, 4, 4, 8, 8}
 
 func addQuietMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
-	list.MoveList[list.Count].Score = 0
+
+    var mv S_Move
+    mv.Move = move
+    if brd.SearchKillers[0][brd.Ply] == move {
+        list.MoveList[list.Count].Score = 900000
+    } else if brd.SearchKillers[1][brd.Ply] == move {
+        list.MoveList[list.Count].Score = 800000
+    } else {
+        list.MoveList[list.Count].Score = int(brd.SearchHistoryArray[brd.Pieces[GetFromSquare(&mv)]][GetToSquare(&mv)])
+    }
+
 	list.Count++
 }
 
@@ -82,13 +92,13 @@ func addCaptureMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
 	var m S_Move
 	m.Move = move
-	list.MoveList[list.Count].Score = MVVLVA[GetCapturedPiece(&m)][brd.Pieces[GetFromSquare(&m)]]
+	list.MoveList[list.Count].Score = MVVLVA[GetCapturedPiece(&m)][brd.Pieces[GetFromSquare(&m)]] + 1000000
 	list.Count++
 }
 
 func addEnPassantMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
-	list.MoveList[list.Count].Score = 105
+	list.MoveList[list.Count].Score = 105 + 1000000
 	list.Count++
 }
 
