@@ -1,7 +1,6 @@
 package eval
 
 import (
-	"fmt"
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"log"
 	"os"
@@ -28,33 +27,6 @@ func InitMvvLva() {
 		for attacker := board.Wp; attacker < board.Bk; attacker++ {
 			MVVLVA[victim][attacker] = vicArray[victim] + 6 - (vicArray[attacker] / 100)
 		}
-	}
-
-	for victim := board.Wp; victim < board.Bk; victim++ {
-		for attacker := board.Wp; attacker < board.Bk; attacker++ {
-			fmt.Println(GetPromotedPieceAlgdebug(attacker), " x ", GetPromotedPieceAlgdebug(victim), " ", MVVLVA[victim][attacker])
-		}
-	}
-
-}
-
-// temporary function for debugging
-func GetPromotedPieceAlgdebug(p board.Piece) string {
-	switch p {
-	case board.Wn, board.Bn:
-		return "n"
-	case board.Wb, board.Bb:
-		return "b"
-	case board.Wq, board.Bq:
-		return "q"
-	case board.Wr, board.Br:
-		return "r"
-	case board.Wp, board.Bp:
-		return "p"
-	case board.Wk, board.Bk:
-		return "k"
-	default:
-		return "p"
 	}
 }
 
@@ -108,11 +80,12 @@ func addQuietMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 
 func addCaptureMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
-    var m S_Move
-    m.Move = move
+	var m S_Move
+	m.Move = move
 	list.MoveList[list.Count].Score = MVVLVA[GetCapturedPiece(&m)][brd.Pieces[GetFromSquare(&m)]]
 	list.Count++
 }
+
 func addEnPassantMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
 	list.MoveList[list.Count].Score = 105

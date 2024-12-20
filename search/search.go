@@ -47,6 +47,7 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 			mv.Move = val
 			eval.PrintMove(&mv)
 		}
+		fmt.Printf("ordering: %v\n", info.FhF/info.Fh)
 	}
 
 }
@@ -106,6 +107,7 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 	score := -Inf
 
 	for i := 0; i < list.Count; i++ {
+		PickNextMove(i, &list)
 		mv := list.MoveList[i]
 		if !eval.MakeMove(brd, &mv) {
 			continue
@@ -138,4 +140,19 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 		board.StorePvMove(brd, brd.PosKey, bestMove)
 	}
 	return alpha
+}
+
+func PickNextMove(moveNum int, list *eval.S_MoveList) {
+	var temp eval.S_Move
+	var index, bestScore int
+	var bestNum int = moveNum
+	for index = moveNum; index < list.Count; index++ {
+		if list.MoveList[index].Score > bestScore {
+			bestScore = list.MoveList[index].Score
+			bestNum = index
+		}
+	}
+	temp = list.MoveList[moveNum]
+	list.MoveList[moveNum] = list.MoveList[bestNum]
+	list.MoveList[bestNum] = temp
 }
