@@ -65,7 +65,7 @@ func main() {
 			// fmt.Println(num)
 			// end := time.Since(start).Milliseconds()
 			// fmt.Printf("TIME IN MS: %v\n", end)
-			info.Depth = 6
+			info.Depth = 7
 			search.SearchPositions(&boardStructure, &info)
 
 		}

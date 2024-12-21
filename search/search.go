@@ -78,15 +78,62 @@ func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
 	info.FhF = 0
 }
 
-func Quiescence(alpha, beta int, brd *board.S_Board, info *board.S_SearchInfo) (score int) {
-	return
+func Quiescence(alpha, beta int, brd *board.S_Board, info *board.S_SearchInfo) int {
+	// board.CheckBoard(brd)
+	info.Nodes++
+	if IsRepetition(brd) || brd.FiftyMove >= 100 {
+		return 0
+	}
+
+	score := EvalPosition(brd)
+	if score >= beta {
+		return beta
+	}
+	if score > alpha {
+		alpha = score
+	}
+
+	var list eval.S_MoveList
+	eval.GenerateAllCaps(brd, &list)
+
+	legal := 0
+	oldAlpha := alpha
+	bestMove := uint32(0)
+	score = -Inf
+
+	for i := 0; i < list.Count; i++ {
+		PickNextMove(i, &list)
+		mv := list.MoveList[i]
+		if !eval.MakeMove(brd, &mv) {
+			continue
+		}
+		legal++
+		score = -Quiescence(-beta, -alpha, brd, info)
+		eval.TakeMove(brd)
+
+		if score > alpha {
+			if score >= beta {
+				if legal == 1 {
+					info.FhF++
+				}
+				info.Fh++
+				return beta
+			}
+			alpha = score
+			bestMove = mv.Move
+		}
+	}
+
+	if alpha != oldAlpha {
+		board.StorePvMove(brd, brd.PosKey, bestMove)
+	}
+	return alpha
 }
 
 func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S_SearchInfo) int {
-	board.CheckBoard(brd)
+	// board.CheckBoard(brd)
 	if depth == 0 {
-		info.Nodes++
-		return EvalPosition(brd)
+		return Quiescence(alpha, beta, brd, info)
 	}
 
 	info.Nodes++
@@ -105,17 +152,17 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 	oldAlpha := alpha
 	bestMove := uint32(0)
 	score := -Inf
-    pvMove := board.ProbePvTable(brd, brd.PosKey)
+	pvMove := board.ProbePvTable(brd, brd.PosKey)
 
-    if pvMove != 0 {
-        for i := 0; i < list.Count; i++ {
-            mv := list.MoveList[i]
-            if mv.Move == pvMove {
-                list.MoveList[i].Score = 2000000
-                break
-            }
-        }
-    }
+	if pvMove != 0 {
+		for i := 0; i < list.Count; i++ {
+			mv := list.MoveList[i]
+			if mv.Move == pvMove {
+				list.MoveList[i].Score = 2000000
+				break
+			}
+		}
+	}
 
 	for i := 0; i < list.Count; i++ {
 		PickNextMove(i, &list)
@@ -133,18 +180,18 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 					info.FhF++
 				}
 				info.Fh++
-                if eval.GetCapturedPiece(&mv) == 0 {
-                    brd.SearchKillers[1][brd.Ply] = brd.SearchKillers[0][brd.Ply]
-                    brd.SearchKillers[0][brd.Ply] = mv.Move
-                }
+				if eval.GetCapturedPiece(&mv) == 0 {
+					brd.SearchKillers[1][brd.Ply] = brd.SearchKillers[0][brd.Ply]
+					brd.SearchKillers[0][brd.Ply] = mv.Move
+				}
 				return beta
 			}
 			alpha = score
 			bestMove = mv.Move
-            if eval.GetCapturedPiece(&mv) == 0 {
-                brd.SearchHistoryArray[brd.Pieces[eval.GetFromSquare(&mv)]][eval.GetToSquare(&mv)] += uint32(depth)
+			if eval.GetCapturedPiece(&mv) == 0 {
+				brd.SearchHistoryArray[brd.Pieces[eval.GetFromSquare(&mv)]][eval.GetToSquare(&mv)] += uint32(depth)
 
-            }
+			}
 		}
 	}
 
