@@ -75,15 +75,15 @@ var PieceDirNum = [13]int{0, 0, 8, 4, 4, 8, 8, 0, 8, 4, 4, 8, 8}
 func addQuietMove(brd *board.S_Board, move uint32, list *S_MoveList) {
 	list.MoveList[list.Count].Move = move
 
-    var mv S_Move
-    mv.Move = move
-    if brd.SearchKillers[0][brd.Ply] == move {
-        list.MoveList[list.Count].Score = 900000
-    } else if brd.SearchKillers[1][brd.Ply] == move {
-        list.MoveList[list.Count].Score = 800000
-    } else {
-        list.MoveList[list.Count].Score = int(brd.SearchHistoryArray[brd.Pieces[GetFromSquare(&mv)]][GetToSquare(&mv)])
-    }
+	var mv S_Move
+	mv.Move = move
+	if brd.SearchKillers[0][brd.Ply] == move {
+		list.MoveList[list.Count].Score = 900000
+	} else if brd.SearchKillers[1][brd.Ply] == move {
+		list.MoveList[list.Count].Score = 800000
+	} else {
+		list.MoveList[list.Count].Score = int(brd.SearchHistoryArray[brd.Pieces[GetFromSquare(&mv)]][GetToSquare(&mv)])
+	}
 
 	list.Count++
 }
@@ -332,6 +332,134 @@ func GenerateAllMoves(brd *board.S_Board, list *S_MoveList) {
 				}
 				if brd.Pieces[toSq] == board.EMPTY {
 					addQuietMove(brd, Move(board.Square(sq), board.Square(toSq), board.EMPTY, board.EMPTY, 0), list)
+					continue
+				}
+				addCaptureMove(brd, Move(board.Square(sq), board.Square(toSq), brd.Pieces[toSq], board.EMPTY, 0), list)
+			}
+		}
+		startIndex++
+		piece = NonSlidingPieces[startIndex]
+	}
+}
+
+func GenerateAllCaps(brd *board.S_Board, list *S_MoveList) {
+	// board.CheckBoard(brd)
+	side := brd.Side
+
+	if side == board.WHITE {
+		for pnum := 0; pnum < brd.PieceNum[board.Wp]; pnum++ {
+			sq := brd.PList[board.Wp][pnum]
+			if brd.Pieces[sq+9] != board.Piece(board.OFFBOARD) {
+				if board.PieceCol[brd.Pieces[sq+9]] == board.BLACK {
+					addWhitePawnCapMove(brd, board.Square(sq), board.Square(sq+9), brd.Pieces[sq+9], list)
+				}
+			}
+			if brd.Pieces[sq+11] != board.Piece(board.OFFBOARD) {
+				if board.PieceCol[brd.Pieces[sq+11]] == board.BLACK {
+					addWhitePawnCapMove(brd, board.Square(sq), board.Square(sq+11), brd.Pieces[sq+11], list)
+				}
+			}
+			if brd.EnP != board.NO_SQ {
+				if board.Square(sq+11) == (brd.EnP) {
+					addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq+11), board.EMPTY, board.EMPTY, FLAGENP), list)
+				}
+				if board.Square(sq+9) == (brd.EnP) {
+					addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq+9), board.EMPTY, board.EMPTY, FLAGENP), list)
+				}
+			}
+		}
+	}
+	if side == board.BLACK {
+		for pnum := 0; pnum < brd.PieceNum[board.Bp]; pnum++ {
+			sq := brd.PList[board.Bp][pnum]
+			if sq <= 0 {
+				break
+			}
+			if brd.Pieces[sq-9] != board.Piece(board.OFFBOARD) {
+				if board.PieceCol[brd.Pieces[sq-9]] == board.WHITE {
+					addBlackPawnCapMove(brd, board.Square(sq), board.Square(sq-9), brd.Pieces[sq-9], list)
+				}
+			}
+			if brd.Pieces[sq-11] != board.Piece(board.OFFBOARD) {
+				if board.PieceCol[brd.Pieces[sq-11]] == board.WHITE {
+					addBlackPawnCapMove(brd, board.Square(sq), board.Square(sq-11), brd.Pieces[sq-11], list)
+				}
+			}
+			if brd.EnP != board.NO_SQ {
+				if board.Square(sq-11) == (brd.EnP) {
+					addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq-11), board.EMPTY, board.EMPTY, FLAGENP), list)
+				}
+				if board.Square(sq-9) == (brd.EnP) {
+					addEnPassantMove(brd, Move(board.Square(sq), board.Square(sq-9), board.EMPTY, board.EMPTY, FLAGENP), list)
+				}
+			}
+		}
+	}
+
+	// Sliding Pieces
+	startIndex := LoopSlidingPiecesIndex[side]
+	piece := LoopSlidingPieces[startIndex]
+	for piece != board.EMPTY {
+		for pnum := 0; pnum < brd.PieceNum[piece]; pnum++ {
+			sq := brd.PList[piece][pnum]
+			if brd.Pieces[sq] == board.EMPTY {
+				continue
+			}
+			if sq == 0 {
+				break
+			}
+			if !board.ValidatePiece(brd.Pieces[sq]) {
+				log.Fatalf("Invalid slider piece (%v)", brd.Pieces[sq])
+			}
+			pieceDirArray := PieceDir[brd.Pieces[sq]]
+			for _, offset := range pieceDirArray {
+				if offset == 0 {
+					continue
+				}
+				toSq := sq + offset
+				for brd.Pieces[toSq] != board.Piece(board.OFFBOARD) {
+					if board.PieceCol[brd.Pieces[toSq]] == side {
+						break
+					}
+					if brd.Pieces[toSq] == board.EMPTY {
+						toSq += offset
+						continue
+					}
+					addCaptureMove(brd, Move(board.Square(sq), board.Square(toSq), brd.Pieces[toSq], board.EMPTY, 0), list)
+					break
+				}
+			}
+		}
+		startIndex++
+		piece = LoopSlidingPieces[startIndex]
+	}
+
+	// NonSlider Pieces
+	startIndex = NonSlidingPiecesIndex[side]
+	piece = NonSlidingPieces[startIndex]
+	for piece != board.EMPTY {
+		for pnum := 0; pnum < brd.PieceNum[piece]; pnum++ {
+			sq := brd.PList[piece][pnum]
+			if brd.Pieces[sq] == board.EMPTY {
+				continue
+			}
+			if sq == 0 {
+				break
+			}
+			if !board.ValidatePiece(brd.Pieces[sq]) {
+				log.Fatalf("Invalid slider piece (%v)", brd.Pieces[sq])
+			}
+
+			pieceDirArray := PieceDir[brd.Pieces[sq]]
+			for _, offset := range pieceDirArray {
+				toSq := sq + offset
+				if brd.Pieces[toSq] == board.Piece(board.OFFBOARD) {
+					continue
+				}
+				if board.PieceCol[brd.Pieces[toSq]] == side {
+					continue
+				}
+				if brd.Pieces[toSq] == board.EMPTY {
 					continue
 				}
 				addCaptureMove(brd, Move(board.Square(sq), board.Square(toSq), brd.Pieces[toSq], board.EMPTY, 0), list)
