@@ -228,7 +228,7 @@ type S_SearchInfo struct {
 	Depth       int
 	DepthSet    int
 	TimeSet     bool
-	Quit        int
+	Quit        bool
 	Stopped     bool
 	MoveControl int
 	Infinite    int
