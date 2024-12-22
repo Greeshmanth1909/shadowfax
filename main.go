@@ -9,7 +9,7 @@ import (
 	"github.com/Greeshmanth1909/shadowfax/search"
 	"github.com/Greeshmanth1909/shadowfax/util"
 	"os"
-	// "time"
+	"time"
 )
 
 func main() {
@@ -66,6 +66,8 @@ func main() {
 			// end := time.Since(start).Milliseconds()
 			// fmt.Printf("TIME IN MS: %v\n", end)
 			info.Depth = 7
+            info.StartTime = time.Now()
+            info.StopTime = 200000
 			search.SearchPositions(&boardStructure, &info)
 
 		}

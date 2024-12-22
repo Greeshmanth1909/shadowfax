@@ -224,12 +224,12 @@ type PvTable struct {
 
 type S_SearchInfo struct {
 	StartTime   time.Time
-	StopTime    int
+	StopTime    int64 // duration since search
 	Depth       int
 	DepthSet    int
-	TimeSet     int
+	TimeSet     bool
 	Quit        int
-	Stopped     int
+	Stopped     bool
 	MoveControl int
 	Infinite    int
 	Nodes       int32

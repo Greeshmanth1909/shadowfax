@@ -10,8 +10,14 @@ import (
 const Inf int = 30000
 const Mate int = 29000
 
-func CheckUp() {
+func CheckUp(info *board.S_SearchInfo) {
 	// check if time up or interrupt from GUI
+    startTime := info.StartTime
+    dur := time.Since(startTime).Milliseconds()
+    if info.TimeSet && dur > info.StopTime {
+       info.Stopped = true 
+    }
+
 }
 func IsRepetition(brd *board.S_Board) bool {
 	pKey := brd.PosKey
@@ -33,23 +39,30 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 	bestScore = -Inf
 	ClearForSearch(brd, info)
 
-	for currentDepth = 0; currentDepth < info.Depth; currentDepth++ {
+	for currentDepth = 1; currentDepth < info.Depth; currentDepth++ {
 		bestScore = AlphaBeta(-Inf, Inf, currentDepth, 1, brd, info)
-		pvMoves = eval.GetPvLine(currentDepth, brd)
-		bestMove = brd.PvArray[0]
-		fmt.Printf("score %v depth %v nodes %v\n", bestScore, currentDepth, info.Nodes)
-		fmt.Printf("move ")
-		var m eval.S_Move
-		m.Move = bestMove
-		for i := 0; i < pvMoves; i++ {
-			val := brd.PvArray[i]
-			var mv eval.S_Move
-			mv.Move = val
-			eval.PrintMove(&mv)
-		}
-		fmt.Printf("ordering: %v\n", info.FhF/info.Fh)
-	}
+        if info.Stopped {
+            break
+        }
+        pvMoves = eval.GetPvLine(currentDepth, brd)
+        bestMove = brd.PvArray[0]
 
+        var m eval.S_Move
+        m.Move = bestMove
+
+        fmt.Printf("info score cp %v depth %v nodes %v time %v pv", bestScore, currentDepth, info.Nodes, time.Since(info.StartTime).Milliseconds())
+        for i := 0; i < pvMoves; i++ {
+            val := brd.PvArray[i]
+            var mv eval.S_Move
+            mv.Move = val
+            eval.PrintMove(&mv)
+        }
+        fmt.Print("\n")
+        fmt.Printf("ordering: %v\n", info.FhF/info.Fh)
+        fmt.Printf("bestmove")
+        eval.PrintMove(&m)
+        fmt.Print("\n")
+	}
 }
 
 func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
@@ -72,7 +85,7 @@ func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
 	brd.Ply = 0
 
 	info.StartTime = time.Now()
-	info.Stopped = 0
+	info.Stopped = false
 	info.Nodes = 0
 	info.Fh = 0
 	info.FhF = 0
@@ -80,6 +93,10 @@ func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
 
 func Quiescence(alpha, beta int, brd *board.S_Board, info *board.S_SearchInfo) int {
 	// board.CheckBoard(brd)
+    if info.Nodes & 2047 == 0 {
+       CheckUp(info) 
+    }
+
 	info.Nodes++
 	if IsRepetition(brd) || brd.FiftyMove >= 100 {
 		return 0
@@ -111,6 +128,10 @@ func Quiescence(alpha, beta int, brd *board.S_Board, info *board.S_SearchInfo) i
 		score = -Quiescence(-beta, -alpha, brd, info)
 		eval.TakeMove(brd)
 
+        if info.Stopped {
+            return 0
+        }
+
 		if score > alpha {
 			if score >= beta {
 				if legal == 1 {
@@ -135,6 +156,10 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 	if depth == 0 {
 		return Quiescence(alpha, beta, brd, info)
 	}
+
+    if info.Nodes & 2047 == 0 {
+       CheckUp(info) 
+    }
 
 	info.Nodes++
 	if IsRepetition(brd) || brd.FiftyMove >= 100 {
@@ -173,6 +198,10 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 		legal++
 		score = -AlphaBeta(-beta, -alpha, depth-1, 1, brd, info)
 		eval.TakeMove(brd)
+
+        if info.Stopped {
+            return 0
+        }
 
 		if score > alpha {
 			if score >= beta {

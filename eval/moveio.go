@@ -12,9 +12,9 @@ func PrintMove(mv *S_Move) {
 	toSq := GetToSquare(mv)
 
 	if GetPromotedPiece(mv) == board.Piece(0) {
-		fmt.Printf("%v%v\n", ConvSq120ToAlge(frmSq), ConvSq120ToAlge(toSq))
+		fmt.Printf(" %v%v", ConvSq120ToAlge(frmSq), ConvSq120ToAlge(toSq))
 	} else {
-		fmt.Printf("%v%v%v\n", ConvSq120ToAlge(frmSq), ConvSq120ToAlge(toSq), GetPromotedPieceAlg(GetPromotedPiece(mv)))
+		fmt.Printf(" %v%v%v", ConvSq120ToAlge(frmSq), ConvSq120ToAlge(toSq), GetPromotedPieceAlg(GetPromotedPiece(mv)))
 	}
 }
 
