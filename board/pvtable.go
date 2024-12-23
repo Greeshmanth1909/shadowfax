@@ -1,9 +1,9 @@
 package board
 
 func InitPvTable(brd *S_Board) {
-	var new PvTable
-	new.PvTableEntries = make(map[uint64]PvEntry)
-	brd.PvTable = &new
+	var newp PvTable
+	newp.PvTableEntries = make(map[uint64]PvEntry)
+	brd.PvTable = &newp
 }
 
 /* I'm not sure weather I should manually clear pv table or let the GC handle it. I'll let the GC handle it for now
