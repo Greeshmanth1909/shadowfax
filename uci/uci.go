@@ -204,7 +204,7 @@ func ParseGo(line string, info *board.S_SearchInfo, brd *board.S_Board) {
 	if depth == -1 {
 		info.Depth = board.MAXDEPTH
 	}
-	fmt.Printf("time:%d start:%d stop:%d depth:%d timeset:%v\n", Time, info.StartTime, info.StopTime, info.Depth, info.TimeSet)
+	fmt.Printf("time:%v start:%v stop:%v depth:%v timeset:%v\n", Time, info.StartTime, info.StopTime, info.Depth, info.TimeSet)
 
 	search.SearchPositions(brd, info) // This function takes a while to finish
 }
