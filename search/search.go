@@ -35,6 +35,7 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 	var bestScore int
 	var currentDepth int
 	var pvMoves int
+	var m eval.S_Move
 
 	bestScore = -Inf
 	ClearForSearch(brd, info)
@@ -47,7 +48,6 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 		pvMoves = eval.GetPvLine(currentDepth, brd)
 		bestMove = brd.PvArray[0]
 
-		var m eval.S_Move
 		m.Move = bestMove
 
 		fmt.Printf("info score cp %v depth %v nodes %v time %v pv", bestScore, currentDepth, info.Nodes, time.Since(info.StartTime).Milliseconds())
@@ -58,11 +58,11 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 			eval.PrintMove(&mv)
 		}
 		fmt.Print("\n")
-		fmt.Printf("ordering: %v\n", info.FhF/info.Fh)
-		fmt.Printf("bestmove")
-		eval.PrintMove(&m)
-		fmt.Print("\n")
 	}
+	// fmt.Printf("ordering: %v\n", info.FhF/info.Fh)
+	fmt.Printf("bestmove")
+	eval.PrintMove(&m)
+	fmt.Print("\n")
 }
 
 func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
@@ -84,7 +84,6 @@ func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
 	brd.PvTable.NumEntries = 0
 	brd.Ply = 0
 
-	info.StartTime = time.Now()
 	info.Stopped = false
 	info.Nodes = 0
 	info.Fh = 0
