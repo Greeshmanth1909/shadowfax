@@ -6,8 +6,11 @@ import (
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"github.com/Greeshmanth1909/shadowfax/eval"
 	"github.com/Greeshmanth1909/shadowfax/position"
+	"github.com/Greeshmanth1909/shadowfax/search"
 	"os"
+	"strconv"
 	"strings"
+	"time"
 )
 
 func UciLoop() {
@@ -94,5 +97,118 @@ func ParsePosition(line string, brd *board.S_Board) {
 }
 
 func ParseGo(line string, info *board.S_SearchInfo, brd *board.S_Board) {
-	return
+	depth := -1
+	movesToGo := 30
+	moveTime := -1
+	Time := -1
+	inc := 0
+
+	info.TimeSet = false
+
+	lineList := strings.Split(line, " ")
+
+	if strings.Contains(line, "infinite") {
+	}
+
+	if strings.Contains(line, "binc") && brd.Side == board.BLACK {
+		index := findIndex("binc", lineList)
+		if index == -1 {
+			fmt.Println("invalid index returned")
+			return
+		}
+		inc, _ = strconv.Atoi(lineList[index+1])
+	}
+
+	if strings.Contains(line, "winc") && brd.Side == board.WHITE {
+		index := findIndex("winc", lineList)
+		if index == -1 {
+			fmt.Println("invalid index returned")
+			return
+		}
+		inc, _ = strconv.Atoi(lineList[index+1])
+	}
+
+	if strings.Contains(line, "wtime") && brd.Side == board.WHITE {
+		index := findIndex("wtime", lineList)
+		if index == -1 {
+			fmt.Println("invalid index returned")
+			return
+		}
+		Time, _ = strconv.Atoi(lineList[index+1])
+	}
+
+	if strings.Contains(line, "btime") && brd.Side == board.BLACK {
+		index := findIndex("btime", lineList)
+		if index == -1 {
+			fmt.Println("invalid index returned")
+			return
+		}
+		Time, _ = strconv.Atoi(lineList[index+1])
+	}
+
+	if strings.Contains(line, "movestogo") {
+		index := findIndex("movestogo", lineList)
+		if index == -1 {
+			fmt.Println("invalid index returned")
+			return
+		}
+		movesToGo, _ = strconv.Atoi(strings.TrimSuffix(lineList[index+1], "\n"))
+	}
+
+	if strings.Contains(line, "movetime") {
+		index := findIndex("movetime", lineList)
+		if index == -1 {
+			fmt.Println("invalid index returned")
+			return
+		}
+		mt, err := strconv.Atoi(strings.TrimSuffix(lineList[index+1], "\n"))
+		if err != nil {
+			fmt.Println(err)
+		}
+		moveTime = mt
+	}
+
+	if strings.Contains(line, "depth") {
+		index := findIndex("depth", lineList)
+		if index == -1 {
+			fmt.Println("invalid index returned")
+			return
+		}
+		d, err := strconv.Atoi(strings.TrimSuffix(lineList[index+1], "\n"))
+		if err != nil {
+			fmt.Println(err)
+		}
+		depth = d + 1
+		fmt.Println("PRINTING DEPTH ", depth)
+	}
+
+	if moveTime != -1 {
+		Time = moveTime
+		movesToGo = 1
+	}
+
+	info.StartTime = time.Now()
+	info.Depth = depth
+
+	if Time != -1 {
+		info.TimeSet = true
+		Time /= movesToGo
+		Time -= 50
+		info.StopTime = int64(Time + inc)
+	}
+
+	if depth == -1 {
+		info.Depth = board.MAXDEPTH
+	}
+	fmt.Printf("time:%d start:%d stop:%d depth:%d timeset:%v\n", Time, info.StartTime, info.StopTime, info.Depth, info.TimeSet)
+	search.SearchPositions(brd, info)
+}
+
+func findIndex(str string, arr []string) int {
+	for i, val := range arr {
+		if val == str {
+			return i
+		}
+	}
+	return -1
 }
