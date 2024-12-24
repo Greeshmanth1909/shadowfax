@@ -4,6 +4,8 @@
 # Shadowfax
 Shadowfax is a UCI chess engine written entirely from scratch in Golang. It will be using classic evlauation and move generation methods. I also plan on upgrading it to an NNUE in version 2. If that sounds interesting, consider giving this repo a star. Thanks!
 
+If you're interested in contributing to the project, please go through [contributing.md](CONTRIBUTING.md)
+
 # Build from source
 
 ## Requirements
@@ -25,3 +27,7 @@ For more instructions on how to link the engine to a gui head [here](addGui.md)
 # testing
 - All unit tests must make sure `util.InitAll()` is called before starting. the results will be inconsistent if this is not followed
 - Uncomment `checkboard` to enter debug mode
+
+# Credits
+- bluefeversoftware for his VICE Engine
+- The Chess Programming Wiki
