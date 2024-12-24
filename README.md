@@ -20,7 +20,7 @@ Here are the GUI's that have been tested so far
 - [en-croissant](https://github.com/franciscoBSalgueiro/en-croissant) for mac
 - [Arena Chess](http://www.playwitharena.de/) for windows
 
-For more instructions on how to link the engine to a gui head [here](linkGui.md)
+For more instructions on how to link the engine to a gui head [here](addGui.md)
 
 # testing
 - All unit tests must make sure `util.InitAll()` is called before starting. the results will be inconsistent if this is not followed
