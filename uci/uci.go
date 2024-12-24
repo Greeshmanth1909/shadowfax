@@ -10,8 +10,12 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
+
+var startInterruptPeek = false
+var m = sync.Mutex{}
 
 func UciLoop() {
 	reader := bufio.NewReader(os.Stdin)
@@ -201,7 +205,8 @@ func ParseGo(line string, info *board.S_SearchInfo, brd *board.S_Board) {
 		info.Depth = board.MAXDEPTH
 	}
 	fmt.Printf("time:%d start:%d stop:%d depth:%d timeset:%v\n", Time, info.StartTime, info.StopTime, info.Depth, info.TimeSet)
-	search.SearchPositions(brd, info)
+
+	search.SearchPositions(brd, info) // This function takes a while to finish
 }
 
 func findIndex(str string, arr []string) int {
@@ -212,3 +217,16 @@ func findIndex(str string, arr []string) int {
 	}
 	return -1
 }
+
+// func InputWaiting() bool {
+// 	fd := int(os.Stdin.Fd())
+// 	var readfds syscall.FdSet
+// 	readfds.Set(fd)
+//
+// 	tv := syscall.Timeval{}
+// 	err := syscall.Select(fd+1, &readfds, nil, nil, &tv)
+// 	if err != nil {
+// 		return false
+// 	}
+// 	return readfds.IsSet(fd)
+// }
