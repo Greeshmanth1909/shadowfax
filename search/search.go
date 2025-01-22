@@ -40,7 +40,12 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 	bestScore = -Inf
 	ClearForSearch(brd, info)
 
+
 	for currentDepth = 1; currentDepth < info.Depth; currentDepth++ {
+        if IsRepetition(brd) {
+            m.Move = board.ProbePvTable(brd, brd.PosKey)
+            break
+        }
 		bestScore = AlphaBeta(-Inf, Inf, currentDepth, 1, brd, info)
 		if info.Stopped {
 			break
