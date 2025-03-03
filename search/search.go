@@ -2,9 +2,10 @@ package search
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/Greeshmanth1909/shadowfax/board"
 	"github.com/Greeshmanth1909/shadowfax/eval"
-	"time"
 )
 
 const Inf int = 30000
@@ -40,18 +41,19 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 	bestScore = -Inf
 	ClearForSearch(brd, info)
 
-
 	for currentDepth = 1; currentDepth < info.Depth; currentDepth++ {
-        if IsRepetition(brd) {
-            m.Move = board.ProbePvTable(brd, brd.PosKey)
-            break
-        }
+		if IsRepetition(brd) {
+			m.Move = board.ProbePvTable(brd, brd.PosKey)
+			break
+		}
 		bestScore = AlphaBeta(-Inf, Inf, currentDepth, 1, brd, info)
 		if info.Stopped {
 			break
 		}
 		pvMoves = eval.GetPvLine(currentDepth, brd)
 		bestMove = brd.PvArray[0]
+		// store the best move in the pv table, maybe??
+		board.StorePvMove(brd, brd.PosKey, bestMove)
 
 		m.Move = bestMove
 
