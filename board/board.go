@@ -5,7 +5,7 @@ import "time"
 // define board of 120 int array
 var Board [120]uint64
 
-const Name string = "Shadowfax v1.0.0"
+const Name string = "Shadowfax v1.0.1"
 
 const BrdSqrNum int = 120
 
