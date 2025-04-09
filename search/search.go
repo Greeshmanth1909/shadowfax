@@ -42,10 +42,10 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 	ClearForSearch(brd, info)
 
 	for currentDepth = 1; currentDepth < info.Depth; currentDepth++ {
-		if IsRepetition(brd) {
-			m.Move = board.ProbePvTable(brd, brd.PosKey)
-			break
-		}
+		// if IsRepetition(brd) {
+		// 	m.Move = board.ProbePvTable(brd, brd.PosKey)
+		// 	break
+		// }
 		bestScore = AlphaBeta(-Inf, Inf, currentDepth, 1, brd, info)
 		if info.Stopped {
 			break
@@ -53,7 +53,7 @@ func SearchPositions(brd *board.S_Board, info *board.S_SearchInfo) {
 		pvMoves = eval.GetPvLine(currentDepth, brd)
 		bestMove = brd.PvArray[0]
 		// store the best move in the pv table, maybe??
-		board.StorePvMove(brd, brd.PosKey, bestMove)
+		// board.StorePvMove(brd, brd.PosKey, bestMove)
 
 		m.Move = bestMove
 
@@ -87,6 +87,10 @@ func ClearForSearch(brd *board.S_Board, info *board.S_SearchInfo) {
 	// Clear pvtable
 	for key := range brd.PvTable.PvTableEntries {
 		delete(brd.PvTable.PvTableEntries, key)
+	}
+	// clear pv array
+	for i := range brd.PvArray {
+		brd.PvArray[i] = 0
 	}
 	brd.PvTable.NumEntries = 0
 	brd.Ply = 0
@@ -168,9 +172,9 @@ func AlphaBeta(alpha, beta, depth, doNull int, brd *board.S_Board, info *board.S
 	}
 
 	info.Nodes++
-	if IsRepetition(brd) || brd.FiftyMove >= 100 {
-		return 0
-	}
+	// if IsRepetition(brd) || brd.FiftyMove >= 100 {
+	// 	return 0
+	// }
 
 	if brd.Ply > board.MAXDEPTH-1 {
 		return EvalPosition(brd)

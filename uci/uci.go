@@ -87,6 +87,9 @@ func ParsePosition(line string, brd *board.S_Board) {
 		moveList := lineList[index+1:]
 		fmt.Println(moveList)
 		for _, move := range moveList {
+			if strings.Contains(move, "\n") {
+				move = strings.TrimSuffix(move, "\n")
+			}
 			mv := eval.ParseMove(move, brd)
 			if mv == 0 {
 				break
