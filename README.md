@@ -4,7 +4,7 @@
 # Shadowfax
 Shadowfax is a UCI chess engine written entirely from scratch in Golang. It will be using classic evlauation and move generation methods. I also plan on upgrading it to an NNUE in version 2. If that sounds interesting, consider giving this repo a star. Thanks!
 
-You can play a game against shadowfax on [Lichess](https://lichess.org/@/UCI_Shadowfax)
+Play a game against shadowfax on [Lichess](https://lichess.org/@/UCI_Shadowfax)
 
 If you're interested in contributing to the project, please go through [contributing.md](CONTRIBUTING.md)
 
