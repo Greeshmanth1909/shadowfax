@@ -59,35 +59,40 @@ func UciLoop() {
 		if info.Quit {
 			break
 		}
-
 	}
-
 }
 
 func ParsePosition(line string, brd *board.S_Board) {
+	// Split line only once and reuse the result
 	lineList := strings.Split(line, " ")
 	startPos := position.StartPosition
 
 	if lineList[1] == "startpos" {
 		position.Parse_FEN(&startPos, brd)
 	} else if lineList[1] == "fen" {
+		// Only perform the join operation when needed
 		fen := strings.Join(lineList[2:8], " ")
 		position.Parse_FEN(&fen, brd)
 	} else {
 		position.Parse_FEN(&startPos, brd)
 	}
 
-	if strings.Contains(line, "moves") {
-		var index int
-		for i, val := range lineList {
-			if val == "moves" {
-				index = i
-			}
+	// Find the "moves" index only once
+	movesIndex := -1
+	for i, val := range lineList {
+		if val == "moves" {
+			movesIndex = i
+			break
 		}
-		moveList := lineList[index+1:]
+	}
+
+	// Process moves if found
+	if movesIndex != -1 && len(lineList) > movesIndex+1 {
+		moveList := lineList[movesIndex+1:]
 		fmt.Println(moveList)
 		for _, move := range moveList {
-			if strings.Contains(move, "\n") {
+			// Trim suffix only if needed
+			if strings.HasSuffix(move, "\n") {
 				move = strings.TrimSuffix(move, "\n")
 			}
 			mv := eval.ParseMove(move, brd)
@@ -112,12 +117,24 @@ func ParseGo(line string, info *board.S_SearchInfo, brd *board.S_Board) {
 
 	info.TimeSet = false
 
+	// Split the line only once
 	lineList := strings.Split(line, " ")
 
-	if strings.Contains(line, "infinite") {
+	// Cache string contains checks for reuse
+	hasInfinite := strings.Contains(line, "infinite")
+	hasBinc := strings.Contains(line, "binc")
+	hasWinc := strings.Contains(line, "winc")
+	hasWtime := strings.Contains(line, "wtime")
+	hasBtime := strings.Contains(line, "btime")
+	hasMovesToGo := strings.Contains(line, "movestogo")
+	hasMoveTime := strings.Contains(line, "movetime")
+	hasDepth := strings.Contains(line, "depth")
+
+	if hasInfinite {
+		// Handle infinite search
 	}
 
-	if strings.Contains(line, "binc") && brd.Side == board.BLACK {
+	if hasBinc && brd.Side == board.BLACK {
 		index := findIndex("binc", lineList)
 		if index == -1 {
 			fmt.Println("invalid index returned")
@@ -126,7 +143,7 @@ func ParseGo(line string, info *board.S_SearchInfo, brd *board.S_Board) {
 		inc, _ = strconv.Atoi(lineList[index+1])
 	}
 
-	if strings.Contains(line, "winc") && brd.Side == board.WHITE {
+	if hasWinc && brd.Side == board.WHITE {
 		index := findIndex("winc", lineList)
 		if index == -1 {
 			fmt.Println("invalid index returned")
@@ -135,7 +152,7 @@ func ParseGo(line string, info *board.S_SearchInfo, brd *board.S_Board) {
 		inc, _ = strconv.Atoi(lineList[index+1])
 	}
 
-	if strings.Contains(line, "wtime") && brd.Side == board.WHITE {
+	if hasWtime && brd.Side == board.WHITE {
 		index := findIndex("wtime", lineList)
 		if index == -1 {
 			fmt.Println("invalid index returned")
@@ -144,7 +161,7 @@ func ParseGo(line string, info *board.S_SearchInfo, brd *board.S_Board) {
 		Time, _ = strconv.Atoi(lineList[index+1])
 	}
 
-	if strings.Contains(line, "btime") && brd.Side == board.BLACK {
+	if hasBtime && brd.Side == board.BLACK {
 		index := findIndex("btime", lineList)
 		if index == -1 {
 			fmt.Println("invalid index returned")
@@ -153,35 +170,50 @@ func ParseGo(line string, info *board.S_SearchInfo, brd *board.S_Board) {
 		Time, _ = strconv.Atoi(lineList[index+1])
 	}
 
-	if strings.Contains(line, "movestogo") {
+	if hasMovesToGo {
 		index := findIndex("movestogo", lineList)
 		if index == -1 {
 			fmt.Println("invalid index returned")
 			return
 		}
-		movesToGo, _ = strconv.Atoi(strings.TrimSuffix(lineList[index+1], "\n"))
+
+		valueStr := lineList[index+1]
+		if strings.HasSuffix(valueStr, "\n") {
+			valueStr = strings.TrimSuffix(valueStr, "\n")
+		}
+		movesToGo, _ = strconv.Atoi(valueStr)
 	}
 
-	if strings.Contains(line, "movetime") {
+	if hasMoveTime {
 		index := findIndex("movetime", lineList)
 		if index == -1 {
 			fmt.Println("invalid index returned")
 			return
 		}
-		mt, err := strconv.Atoi(strings.TrimSuffix(lineList[index+1], "\n"))
+
+		valueStr := lineList[index+1]
+		if strings.HasSuffix(valueStr, "\n") {
+			valueStr = strings.TrimSuffix(valueStr, "\n")
+		}
+		mt, err := strconv.Atoi(valueStr)
 		if err != nil {
 			fmt.Println(err)
 		}
 		moveTime = mt
 	}
 
-	if strings.Contains(line, "depth") {
+	if hasDepth {
 		index := findIndex("depth", lineList)
 		if index == -1 {
 			fmt.Println("invalid index returned")
 			return
 		}
-		d, err := strconv.Atoi(strings.TrimSuffix(lineList[index+1], "\n"))
+
+		valueStr := lineList[index+1]
+		if strings.HasSuffix(valueStr, "\n") {
+			valueStr = strings.TrimSuffix(valueStr, "\n")
+		}
+		d, err := strconv.Atoi(valueStr)
 		if err != nil {
 			fmt.Println(err)
 		}
