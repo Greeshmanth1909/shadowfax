@@ -3,3 +3,4 @@ shadowfax
 .DS_Store
 engines
 shadowfaxLinuxAmd64
+cli-test.sh

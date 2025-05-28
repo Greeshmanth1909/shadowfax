@@ -1,15 +1,19 @@
 package search
 
 import (
-	"github.com/Greeshmanth1909/shadowfax/board"
 	"log"
 	"os"
+	"slices"
+
+	"github.com/Greeshmanth1909/shadowfax/board"
 )
 
 func init() {
 	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
 	log.SetOutput(os.Stdout)
 }
+
+const isolatedPawnEval int = 10
 
 var KnightTable = [64]int{
 	0, -10, 0, 0, 0, 0, -10, 0,
@@ -183,9 +187,73 @@ func EvalPosition(brd *board.S_Board) (score int) {
 		score -= RookTable[Mirror64[board.Square120to64[square]]]
 	}
 
+	// // account for isolated Pawns
+	// whiteIsolatedPawn, isolatedPawnNumber := isolatedPawn(brd, board.WHITE)
+	// if whiteIsolatedPawn {
+	//     score -= isolatedPawnNumber * isolatedPawnEval
+	// }
+	// blackIsolatedPawn, isolatedPawnNumber := isolatedPawn(brd, board.WHITE)
+	// if blackIsolatedPawn {
+	//     score += isolatedPawnNumber * isolatedPawnNumber
+	// }
+
 	if brd.Side == board.WHITE {
 		return score
 	} else {
 		return -score
 	}
+}
+
+/*
+Returns a boolean stating the existence of an isolated pawn for side and
+number of isolated paws.
+*/
+func isolatedPawn(brd *board.S_Board, side board.Color) (exists bool, number int) {
+	pawnList := [2]board.Piece{board.Wp, board.Bp}
+	pawn := pawnList[side]
+	pawnsArray := brd.PList[pawn][:brd.PieceNum[pawn]]
+	filesArray := []board.File{}
+	for i := range pawnsArray {
+		filesArray = append(filesArray, board.File(pawnsArray[i]/10))
+	}
+	for _, file := range filesArray {
+		switch file {
+		case board.FILE_A:
+			if !slices.Contains(filesArray, board.FILE_B) {
+				number++
+			}
+		case board.FILE_B:
+			if !slices.Contains(filesArray, board.FILE_A) && !slices.Contains(filesArray, board.FILE_C) {
+				number++
+			}
+		case board.FILE_C:
+			if !slices.Contains(filesArray, board.FILE_B) && !slices.Contains(filesArray, board.FILE_D) {
+				number++
+			}
+		case board.FILE_D:
+			if !slices.Contains(filesArray, board.FILE_C) && !slices.Contains(filesArray, board.FILE_E) {
+				number++
+			}
+		case board.FILE_E:
+			if !slices.Contains(filesArray, board.FILE_D) && !slices.Contains(filesArray, board.FILE_F) {
+				number++
+			}
+		case board.FILE_F:
+			if !slices.Contains(filesArray, board.FILE_E) && !slices.Contains(filesArray, board.FILE_G) {
+				number++
+			}
+		case board.FILE_G:
+			if !slices.Contains(filesArray, board.FILE_F) && !slices.Contains(filesArray, board.FILE_H) {
+				number++
+			}
+		case board.FILE_H:
+			if !slices.Contains(filesArray, board.FILE_G) {
+				number++
+			}
+		}
+	}
+	if number != 0 {
+		exists = true
+	}
+	return
 }
