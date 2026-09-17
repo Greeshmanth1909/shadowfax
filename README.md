@@ -2,7 +2,7 @@
 
 ![Tests](https://github.com/Greeshmanth1909/Shadowfax/actions/workflows/ci.yml/badge.svg)
 # Shadowfax
-Shadowfax is a UCI chess engine written entirely from scratch in Golang. It will be using classic evlauation and move generation methods. I also plan on upgrading it to an NNUE in version 2. If that sounds interesting, consider giving this repo a star. Thanks!
+Shadowfax is a UCI chess engine written entirely from scratch in Golang. It will be using classic evaluation and move generation methods. I also plan on upgrading it to an NNUE in version 2. If that sounds interesting, consider giving this repo a star. Thanks!
 
 Play a game against shadowfax on [Lichess](https://lichess.org/@/UCI_Shadowfax)
 
